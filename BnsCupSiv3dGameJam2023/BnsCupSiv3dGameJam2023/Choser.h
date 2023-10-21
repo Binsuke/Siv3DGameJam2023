@@ -1,4 +1,8 @@
 ﻿#pragma once
+
+#include "Water.h"
+#include "food.h"
+
 class Choser
 {
 public:
@@ -8,6 +12,11 @@ public:
 	void BuildButton();
 	void ArmyTraning();
 
+	void Init();
+
+
+
+	void OnClicked();
 private:
 	const enum Param {
 		NestOpenButtonY = 50,
@@ -29,7 +38,23 @@ private:
 		atY = 50,
 		atX = 650,
 		atSize =70,
+
+		InitTurnActionCnt = 4,
 	};
+
+	int32 TurnActionCount = Param::InitTurnActionCnt;
+
+	bool InitFlg = false;
+	food _FoodObj;
+	Water _WaterObj;
+
+	Circle nobCircle;
+	Circle gfbCircle;
+	Circle gwbCircle;
+	Circle bbCircle;
+	Circle atCircle;
+	
+
 
 };
 

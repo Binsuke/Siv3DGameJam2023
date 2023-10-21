@@ -153,6 +153,12 @@
     <ClCompile Include="food.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Water.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debugMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\icon.ico">
@@ -792,6 +798,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="food.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Water.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="debugMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

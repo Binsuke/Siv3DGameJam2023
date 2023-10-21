@@ -2,6 +2,8 @@
 
 #include "AntNestBoad.h"
 #include "Choser.h"
+
+
 void Main()
 {
 
@@ -16,7 +18,11 @@ void Main()
 	AntNestBoad aNest;
 
 	Choser cButton;
-	
+
+
+	cButton.Init();
+
+
 	while (System::Update())
 	{
 		aNest.Draw();
@@ -26,6 +32,7 @@ void Main()
 		cButton.BuildButton();
 		cButton.ArmyTraning();
 
+		cButton.OnClicked();
 	}
 }
 
