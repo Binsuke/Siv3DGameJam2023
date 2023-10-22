@@ -22,13 +22,16 @@ private:
 		Close = 0,
 		Open = 1,
 		canOpen = 2,
+		Build = 3,
 
-		Color_Pattern = 4,
+		Color_Pattern = 6,
 		cpClose = 0,
 		cpOpen = 1,
-		cpCanOpen = 0,
+		cpCanOpen = 0,		//cpCloseと見た目は同じ
 		cpMouseOver = 2,
 		cpMouseOverCant = 3,
+		cpBuildMouseOver = 4,
+		cpBuild = 5,
 	};
 	//のちのちテクスチャーに変更するかも
 	
@@ -62,6 +65,9 @@ public:
 	void Draw();
 	bool OnClicked(int x,int y);
 	bool MouseOveredChangeColor(bool OpenFlg);
+
+	bool BuildOnClicked(int x, int y);
+	bool BuildMouseOveredChangeColor(bool OpenFlg);
 
 	void BoadClear();
 	void BoadUpdate(int32 x,int32 y);

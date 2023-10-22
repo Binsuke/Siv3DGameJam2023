@@ -30,12 +30,15 @@ void AntNestBoad::Init() {
 		iColorPicker[eNestData::cpOpen] = ColorF(0.7);
 		iColorPicker[eNestData::cpMouseOver] = ColorF(0.4);
 		iColorPicker[eNestData::cpMouseOverCant] = ColorF(1.0);
+		iColorPicker[eNestData::cpBuildMouseOver] = ColorF(0.8);
+		iColorPicker[eNestData::cpBuild] = ColorF(0.7, 0.5, 0, 3);
 
 		fColorPicker[eNestData::cpClose] = ColorF(0.2);
 		fColorPicker[eNestData::cpOpen] = ColorF(0.6);
 		fColorPicker[eNestData::cpMouseOver] = ColorF(0.3);
 		fColorPicker[eNestData::cpMouseOverCant] = ColorF(0.9);
-
+		fColorPicker[eNestData::cpBuildMouseOver] = ColorF(0.7);
+		fColorPicker[eNestData::cpBuild] = ColorF(0.8, 0.5, 0.3);
 
 		InitCanOpenSet(Param::InitPosx, Param::InitPosY);//仮の最初の穴
 
@@ -86,6 +89,16 @@ bool AntNestBoad::OnClicked(int x, int y) {
 	return false;
 }
 
+bool AntNestBoad::BuildOnClicked(int x, int y) {
+	if (NestRect[x][y].leftClicked()) {
+		NestData[x][y] = eNestData::Build;
+		iColor[x][y] = iColorPicker[eNestData::cpBuild];
+		fColor[x][y] = fColorPicker[eNestData::cpBuild];
+		BoadUpdate(x, y);
+		return true;
+	}
+}
+
 bool AntNestBoad::MouseOveredChangeColor(bool OpenFlg) {
 
 	if (OpenFlg) {
@@ -118,6 +131,37 @@ bool AntNestBoad::MouseOveredChangeColor(bool OpenFlg) {
 	return false;
 }
 
+
+bool AntNestBoad::BuildMouseOveredChangeColor(bool OpenFlg) {
+	if (OpenFlg) {
+		for (int x = 0; x < NestSize::_W; x++) {
+			for (int y = 0; y < NestSize::_H; y++) {
+				if (NestRect[x][y].mouseOver() && NestData[x][y] == eNestData::Open){
+					iColor[x][y] = iColorPicker[eNestData::cpBuildMouseOver];
+					fColor[x][y] = fColorPicker[eNestData::cpBuildMouseOver];
+					return BuildOnClicked(x, y);
+				}
+				else if (iColor[x][y] == iColorPicker[eNestData::cpBuildMouseOver]) {
+					switch (NestData[x][y]) {
+					case eNestData::Open:
+						iColor[x][y] = iColorPicker[eNestData::cpOpen];
+						fColor[x][y] = fColorPicker[eNestData::cpOpen];
+						break;
+					case eNestData::Close:
+						iColor[x][y] = iColorPicker[eNestData::cpClose];
+						fColor[x][y] = fColorPicker[eNestData::cpClose];
+						break;
+					case eNestData::canOpen:
+						iColor[x][y] = iColorPicker[eNestData::cpCanOpen];
+						fColor[x][y] = fColorPicker[eNestData::cpCanOpen];
+						break;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
 
 void AntNestBoad::BoadClear() {
 	for (int x = 0; x < NestSize::_W; x++) {

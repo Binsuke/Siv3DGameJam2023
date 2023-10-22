@@ -163,6 +163,11 @@ void Choser::OnClicked() {
 				break;
 			}
 		}
+
+		if (_NestObj.BuildMouseOveredChangeColor(NestBuildFlg)) {
+			--TurnActionCount;
+			NestBuildFlg = false;
+		}
 		DebugPrint(NestBuildFlg, U"ネストビルドフラグ");
 	}
 	
