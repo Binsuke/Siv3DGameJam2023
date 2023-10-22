@@ -74,11 +74,19 @@ void AntNestBoad::Init() {
 	}
 }
 
-void AntNestBoad::OnClicked() {
+bool AntNestBoad::OnClicked(int x, int y) {
 
+	if (NestRect[x][y].leftClicked()) {
+		NestData[x][y] = eNestData::Open;
+		iColor[x][y] = iColorPicker[eNestData::cpOpen];
+		fColor[x][y] = fColorPicker[eNestData::cpOpen];
+		BoadUpdate(x, y);
+		return true;
+	}
+	return false;
 }
 
-void AntNestBoad::MouseOveredChangeColor(bool OpenFlg) {
+bool AntNestBoad::MouseOveredChangeColor(bool OpenFlg) {
 
 	if (OpenFlg) {
 		for (int x = 0; x < NestSize::_W; x++) {
@@ -86,6 +94,7 @@ void AntNestBoad::MouseOveredChangeColor(bool OpenFlg) {
 				if (NestRect[x][y].mouseOver() && NestData[x][y] == eNestData::canOpen) {
 					iColor[x][y] = iColorPicker[eNestData::cpMouseOver];
 					fColor[x][y] = fColorPicker[eNestData::cpMouseOver];
+					return OnClicked(x, y);
 				}
 				else if (iColor[x][y] == iColorPicker[eNestData::cpMouseOver]) {
 					switch (NestData[x][y]) {
@@ -106,18 +115,14 @@ void AntNestBoad::MouseOveredChangeColor(bool OpenFlg) {
 			}
 		}
 	}
+	return false;
 }
 
 
 void AntNestBoad::BoadClear() {
 	for (int x = 0; x < NestSize::_W; x++) {
 		for (int y = 0; y < NestSize::_H; y++) {
-			/*if (x == 4 && y == 0) {
-				NestData[x][y] = eNestData::Open;
-			}
-			else {*/
 				NestData[x][y] = eNestData::Close;
-			//}
 		}
 	}
 }
@@ -204,20 +209,3 @@ void AntNestBoad::BoadOpen(int32 x, int32 y) {
 		BoadUpdate(x, y);
 	}
 }
-//void AntNestBoad::SearchCanOpenBlock() {
-//
-//}
-//
-//void AntNestBoad::CheckBlockState( int32 x, int32 y) {
-//	int32 tmpx = x;
-//	int32 tmpy = y;
-//
-//	//上のレクタングルの状態確認
-//	tmpy -= 1;
-//	if (tmpy < 0){
-//		tmpy = 0;
-//	}
-//	else if (NestData[tmpx][tmpy] == eNestData::Open) {//上のデータがすでにオープンだった場合
-//		CheckBlockState(tmpx, tmpy);
-//	}
-//}

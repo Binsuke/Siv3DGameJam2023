@@ -63,6 +63,12 @@ private:
 	//ネストオープンボタンのアクティブ、非アクティブ判定用フラグ
 	bool NestOpenFlg;
 
+	//ネストビルドボタンのアクティブと非アクティブのカラー
+	Color NestBuildButtonColor[2];
+
+	//ビルドフラグ
+	bool NestBuildFlg = false;
+
 	//ボタンサークル
 	Circle nobCircle;
 	Circle gfbCircle;

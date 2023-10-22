@@ -37,8 +37,17 @@ void Choser::GetWaterButton() {
 
 void Choser::BuildButton() {
 	if (InitFlg) {
-		bbCircle.draw(ColorF(0.7, 0.5, 0.2));
+		int32 tmp = 0;
+		if (NestBuildFlg) {
+			tmp = Choser::Param::_true;
+		}
+		else {
+			tmp = Choser::Param::_false;
+		}
+		bbCircle.draw(NestBuildButtonColor[tmp]);
 		bbCircle.drawFrame(2, ColorF(0.1));
+
+		DebugPrint(NestBuildButtonColor[tmp], U"ビルドボタンカラー");
 	}
 }
 
@@ -88,6 +97,11 @@ void Choser::Init() {
 
 	NestOpenButtonColor[Choser::Param::_true] = ColorF(1.0, 0.7, 1.0);
 
+	NestBuildButtonColor[Choser::Param::_false] = ColorF(0.7, 0.5, 0.2);
+
+	NestBuildButtonColor[Choser::Param::_true] = ColorF(1.0, 0.5, 0.2);
+
+
 	NestOpenFlg = false;
 
 	_NestObj.Init();
@@ -101,21 +115,25 @@ void Choser::OnClicked() {
 	ClearPrint();
 	//行動権が残っていたら
 	if (TurnActionCount > 0) {
+		//食べ物の調達ボタンクリック
 		if (gfbCircle.leftClicked()) {
 			_FoodObj.SearchFood();
 
 			--TurnActionCount;
 		}
+		//水の調達ボタンクリック
 		if (gwbCircle.leftClicked()) {
 			_WaterObj.SearchWater();
 
 			--TurnActionCount;
 		}
+		//アーミートレーニングサークルクリック
 		if (atCircle.leftClicked()) {
 			_ArmyObj.ArmyTraningOnClicked();
 
 			--TurnActionCount;
 		}
+		//ネストオープンサークルクリック
 		if (nobCircle.leftClicked()) {
 			
 			switch(NestOpenFlg) {
@@ -129,6 +147,23 @@ void Choser::OnClicked() {
 			
 			DebugPrint(NestOpenFlg, U"NestOpenFlg");
 		}
+		//Nestの実際のオープン関係関数　マウスオーバーの色変化＋マウスクリック
+		if (_NestObj.MouseOveredChangeColor(NestOpenFlg)) {
+			--TurnActionCount;
+			NestOpenFlg = false;
+		}
+
+		if (bbCircle.leftClicked()) {
+			switch (NestBuildFlg) {
+			case false:
+				NestBuildFlg = true;
+				break;
+			case true:
+				NestBuildFlg = false;
+				break;
+			}
+		}
+		DebugPrint(NestBuildFlg, U"ネストビルドフラグ");
 	}
 	
 	DebugPrint(TurnActionCount, U"残り手番");
@@ -140,5 +175,5 @@ void Choser::OnClicked() {
 void Choser::Run() {
 	OnClicked();
 
-	_NestObj.MouseOveredChangeColor(NestOpenFlg);
+	//_NestObj.MouseOveredChangeColor(NestOpenFlg);
 }

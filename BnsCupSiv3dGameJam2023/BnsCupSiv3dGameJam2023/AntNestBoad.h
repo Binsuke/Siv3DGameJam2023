@@ -60,8 +60,8 @@ private:
 	//const Texture texture{U}
 public:
 	void Draw();
-	void OnClicked();
-	void MouseOveredChangeColor(bool OpenFlg);
+	bool OnClicked(int x,int y);
+	bool MouseOveredChangeColor(bool OpenFlg);
 
 	void BoadClear();
 	void BoadUpdate(int32 x,int32 y);
