@@ -10,7 +10,6 @@ void AntNestBoad::Draw()
 	}
 	
 
-	int32 PosX, PosY, SizeW, SizeH;
 	for (int x = 0; x < NestSize::_W; x++) {
 		for (int y = 0; y < NestSize::_H; y++) {
 			NestRect[x][y].draw(iColor[x][y]);
@@ -27,13 +26,13 @@ void AntNestBoad::Init() {
 
 		//各カラー設定 iColorPickerがインナーカラー
 		//             fColorPiuckerがフレイムカラー
-		iColorPicker[NestData::cpClose] = ColorF(0.1);
-		iColorPicker[NestData::cpOpen] = ColorF(0.7);
-		iColorPicker[NestData::cpMouseOver] = ColorF(0.4);
+		iColorPicker[eNestData::cpClose] = ColorF(0.1);
+		iColorPicker[eNestData::cpOpen] = ColorF(0.7);
+		iColorPicker[eNestData::cpMouseOver] = ColorF(0.4);
 
-		fColorPicker[NestData::cpClose] = ColorF(0.2);
-		fColorPicker[NestData::cpOpen] = ColorF(0.6);
-		fColorPicker[NestData::cpMouseOver] = ColorF(0.3);
+		fColorPicker[eNestData::cpClose] = ColorF(0.2);
+		fColorPicker[eNestData::cpOpen] = ColorF(0.6);
+		fColorPicker[eNestData::cpMouseOver] = ColorF(0.3);
 
 		for (int x = 0; x < NestSize::_W; x++) {
 			for (int y = 0; y < NestSize::_H; y++) {
@@ -47,22 +46,18 @@ void AntNestBoad::Init() {
 
 
 				switch (NestData[x][y]) {
-				case NestData::Open:
-					iColor[x][y] = iColorPicker[NestData::cpOpen];
-					fColor[x][y] = fColorPicker[NestData::cpOpen];
+				case eNestData::Open:
+					iColor[x][y] = iColorPicker[eNestData::cpOpen];
+					fColor[x][y] = fColorPicker[eNestData::cpOpen];
 					break;
-				case NestData::Close:
-					iColor[x][y] = iColorPicker[NestData::cpClose];
-					fColor[x][y] = fColorPicker[NestData::cpClose];
+				case eNestData::Close:
+					iColor[x][y] = iColorPicker[eNestData::cpClose];
+					fColor[x][y] = fColorPicker[eNestData::cpClose];
 					break;
 				}
 
 			};
 		}
-
-
-
-
 
 		InitFlg = true;
 	}
@@ -70,5 +65,31 @@ void AntNestBoad::Init() {
 
 void AntNestBoad::OnClicked() {
 
+}
+
+void AntNestBoad::MouseOveredChangeColor(bool OpenFlg) {
+
+	if (OpenFlg) {
+		for (int x = 0; x < NestSize::_W; x++) {
+			for (int y = 0; y < NestSize::_H; y++) {
+				if (NestRect[x][y].mouseOver()) {
+					iColor[x][y] = iColorPicker[eNestData::cpMouseOver];
+					fColor[x][y] = fColorPicker[eNestData::cpMouseOver];
+				}
+				else if (iColor[x][y] == iColorPicker[eNestData::cpMouseOver]) {
+					switch (NestData[x][y]) {
+					case eNestData::Open:
+						iColor[x][y] = iColorPicker[eNestData::cpOpen];
+						fColor[x][y] = fColorPicker[eNestData::cpOpen];
+						break;
+					case eNestData::Close:
+						iColor[x][y] = iColorPicker[eNestData::cpClose];
+						fColor[x][y] = fColorPicker[eNestData::cpClose];
+						break;
+					}
+				}
+			}
+		}
+	}
 }
 

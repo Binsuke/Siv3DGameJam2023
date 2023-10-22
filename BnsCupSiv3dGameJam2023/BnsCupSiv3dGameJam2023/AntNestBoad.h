@@ -6,10 +6,10 @@ public:
 		for (int x = 0; x < NestSize::_W; x++) {
 			for (int y = 0; y < NestSize::_H; y++) {
 				if (x == 4 && y == 0) {
-					NestData[x][y] = NestData::Open;
+					NestData[x][y] = eNestData::Open;
 				}
 				else {
-					NestData[x][y] = NestData::Close;
+					NestData[x][y] = eNestData::Close;
 				}
 			}
 		}
@@ -25,7 +25,7 @@ private:
 		 
 	};
 
-	const enum NestData {
+	const enum eNestData {
 		Close = 0,
 		Open = 1,
 
@@ -44,8 +44,8 @@ private:
 		_W = 9,
 		_H = 6,
 	};
-	Color iColorPicker[NestData::Color_Pattern];
-	Color fColorPicker[NestData::Color_Pattern];
+	Color iColorPicker[eNestData::Color_Pattern];
+	Color fColorPicker[eNestData::Color_Pattern];
 
 	Color iColor[NestSize::_W][NestSize::_H];
 	Color fColor[NestSize::_W][NestSize::_H];
@@ -60,7 +60,7 @@ private:
 public:
 	void Draw();
 	void OnClicked();
-	void MousuOverChangeColor();
+	void MouseOveredChangeColor(bool OpenFlg);
 
 };
 

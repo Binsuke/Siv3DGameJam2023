@@ -26,10 +26,9 @@ void Main()
 	while (System::Update())
 	{
 
+		cButton.Run();
 		cButton.Draw();
 
-
-		cButton.OnClicked();
 	}
 }
 

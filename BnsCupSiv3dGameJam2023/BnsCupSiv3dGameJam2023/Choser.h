@@ -19,7 +19,7 @@ public:
 	void Draw();
 
 
-	void OnClicked();
+	void Run();
 private:
 	const enum Param {
 		NestOpenButtonY = 50,
@@ -49,23 +49,29 @@ private:
 	};
 
 	int32 TurnActionCount = Param::InitTurnActionCnt;
-
+	//初期化フラグ
 	bool InitFlg = false;
+	//各関数オブジェクト
 	food _FoodObj;
 	Water _WaterObj;
 	Army _ArmyObj;
 	AntNestBoad _NestObj;
 
+	//ネストオープンボタンのアクティブと非アクティブの色変化
 	Color NestOpenButtonColor[2];
 
+	//ネストオープンボタンのアクティブ、非アクティブ判定用フラグ
 	bool NestOpenFlg;
 
+	//ボタンサークル
 	Circle nobCircle;
 	Circle gfbCircle;
 	Circle gwbCircle;
 	Circle bbCircle;
 	Circle atCircle;
-	
+
+	//Function
+	void OnClicked();
 
 
 };

@@ -135,3 +135,10 @@ void Choser::OnClicked() {
 
 	
 }
+
+
+void Choser::Run() {
+	OnClicked();
+
+	_NestObj.MouseOveredChangeColor(NestOpenFlg);
+}
