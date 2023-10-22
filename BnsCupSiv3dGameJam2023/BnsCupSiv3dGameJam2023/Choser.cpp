@@ -6,7 +6,14 @@
 
 void Choser::NestOpenButton() {
 	if (InitFlg) {
-		nobCircle.draw(ColorF(0.3, 0.7, 1.0));
+		int32 tmp = 0;
+		if (NestOpenFlg) {
+			tmp = Choser::Param:: _true;
+		}
+		else {
+			tmp = Choser::Param::_false;
+		}
+		nobCircle.draw(NestOpenButtonColor[tmp]);
 		nobCircle.drawFrame(2, ColorF(0.1));
 	}
 }
@@ -42,6 +49,16 @@ void Choser::ArmyTraning() {
 	}
 }
 
+void Choser::Draw()
+{
+	NestOpenButton();
+	GetFoodButton();
+	GetWaterButton();
+	BuildButton();
+	ArmyTraning();
+	_NestObj.Draw();
+}
+
 
 
 void Choser::Init() {
@@ -65,11 +82,23 @@ void Choser::Init() {
 	Circle circle5{ Choser::Param::atX + Choser::Param::atSize / 2 ,Choser::Param::atY + Choser::Param::atSize / 2,Choser::Param::atSize };
 	atCircle = circle5;
 
+	
+
+	NestOpenButtonColor[Choser::Param::_false] = ColorF(0.3, 0.7, 1.0);
+
+	NestOpenButtonColor[Choser::Param::_true] = ColorF(1.0, 0.7, 1.0);
+
+	NestOpenFlg = false;
+
+	_NestObj.Init();
+
 	InitFlg = true;
 }
 
 
 void Choser::OnClicked() {
+
+	ClearPrint();
 	//行動権が残っていたら
 	if (TurnActionCount > 0) {
 		if (gfbCircle.leftClicked()) {
@@ -82,8 +111,26 @@ void Choser::OnClicked() {
 
 			--TurnActionCount;
 		}
+		if (atCircle.leftClicked()) {
+			_ArmyObj.ArmyTraningOnClicked();
+
+			--TurnActionCount;
+		}
+		if (nobCircle.leftClicked()) {
+			
+			switch(NestOpenFlg) {
+				case false:
+					NestOpenFlg = true;
+					break;
+				case true:
+					NestOpenFlg = false;
+					break;
+			}
+			
+			DebugPrint(NestOpenFlg, U"NestOpenFlg");
+		}
 	}
-	ClearPrint();
+	
 	DebugPrint(TurnActionCount, U"残り手番");
 
 	

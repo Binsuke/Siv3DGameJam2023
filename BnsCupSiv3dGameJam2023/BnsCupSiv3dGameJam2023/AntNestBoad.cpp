@@ -4,27 +4,71 @@
 
 void AntNestBoad::Draw()
 {
-	Color iColor[2] = { ColorF(0.7), ColorF(0.1) };
-
-	Color fColor[2] = { ColorF(0.6), ColorF(0.2) };
+	if (!InitFlg) {
+		Print << U"RECTデータの初期化がされていません";
+		return;
+	}
+	
 
 	int32 PosX, PosY, SizeW, SizeH;
 	for (int x = 0; x < NestSize::_W; x++) {
 		for (int y = 0; y < NestSize::_H; y++) {
-			PosX = AntNestBoad::Param::Pos_TopLeft_X + AntNestBoad::Param::SizeW * x + 10 * x;
-			PosY = AntNestBoad::Param::Pos_TopLeft_Y + AntNestBoad::Param::SizeH * y + 10 * y;
-			SizeW = AntNestBoad::Param::SizeW;
-			SizeH = AntNestBoad::Param::SizeH;
-
-			Rect{ PosX,PosY,SizeW,SizeH }.draw(iColor[NestData[x][y]]);
-			Rect{ PosX,PosY,SizeW,SizeH }.drawFrame(5,5,fColor[NestData[x][y]]);
-
-		};
-
-
-			//Rect{ AntNestBoad::Param::Pos_TopLeft_X + AntNestBoad::Param::SizeW * x,AntNestBoad::Param::Pos_TopLeft_Y+ AntNestBoad::Param::SizeH,AntNestBoad::Param::SizeW,AntNestBoad::Param::SizeH }.draw(ColorF(0.7));
-			//Rect{ AntNestBoad::Param::Pos_TopLeft_X,AntNestBoad::Param::Pos_TopLeft_Y,AntNestBoad::Param::SizeW,AntNestBoad::Param::SizeH }.drawFrame(5, 5, ColorF(0.2));
-		
+			NestRect[x][y].draw(iColor[x][y]);
+			NestRect[x][y].drawFrame(5, 5, fColor[x][y]);
+		};		
 	}
 
 }
+
+
+void AntNestBoad::Init() {
+	if (!InitFlg) {
+		int32 PosX, PosY, SizeW, SizeH;
+
+		//各カラー設定 iColorPickerがインナーカラー
+		//             fColorPiuckerがフレイムカラー
+		iColorPicker[NestData::cpClose] = ColorF(0.1);
+		iColorPicker[NestData::cpOpen] = ColorF(0.7);
+		iColorPicker[NestData::cpMouseOver] = ColorF(0.4);
+
+		fColorPicker[NestData::cpClose] = ColorF(0.2);
+		fColorPicker[NestData::cpOpen] = ColorF(0.6);
+		fColorPicker[NestData::cpMouseOver] = ColorF(0.3);
+
+		for (int x = 0; x < NestSize::_W; x++) {
+			for (int y = 0; y < NestSize::_H; y++) {
+				PosX = AntNestBoad::Param::Pos_TopLeft_X + AntNestBoad::Param::SizeW * x + 10 * x;
+				PosY = AntNestBoad::Param::Pos_TopLeft_Y + AntNestBoad::Param::SizeH * y + 10 * y;
+				SizeW = AntNestBoad::Param::SizeW;
+				SizeH = AntNestBoad::Param::SizeH;
+
+				NestRect[x][y] = Rect{ PosX,PosY,SizeW,SizeH };
+				NestRect[x][y] = Rect{ PosX,PosY,SizeW,SizeH };
+
+
+				switch (NestData[x][y]) {
+				case NestData::Open:
+					iColor[x][y] = iColorPicker[NestData::cpOpen];
+					fColor[x][y] = fColorPicker[NestData::cpOpen];
+					break;
+				case NestData::Close:
+					iColor[x][y] = iColorPicker[NestData::cpClose];
+					fColor[x][y] = fColorPicker[NestData::cpClose];
+					break;
+				}
+
+			};
+		}
+
+
+
+
+
+		InitFlg = true;
+	}
+}
+
+void AntNestBoad::OnClicked() {
+
+}
+

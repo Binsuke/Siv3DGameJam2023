@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AntNestBoad.cpp" />
+    <ClCompile Include="Army.cpp" />
     <ClCompile Include="Choser.cpp" />
     <ClCompile Include="debugMgr.cpp" />
     <ClCompile Include="food.cpp" />
@@ -321,6 +322,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntNestBoad.h" />
+    <ClInclude Include="Army.h" />
     <ClInclude Include="Choser.h" />
     <ClInclude Include="debugMgr.h" />
     <ClInclude Include="food.h" />

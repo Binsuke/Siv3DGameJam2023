@@ -2,6 +2,8 @@
 
 #include "Water.h"
 #include "food.h"
+#include "Army.h"
+#include "AntNestBoad.h"
 
 class Choser
 {
@@ -14,6 +16,7 @@ public:
 
 	void Init();
 
+	void Draw();
 
 
 	void OnClicked();
@@ -37,9 +40,12 @@ private:
 
 		atY = 50,
 		atX = 650,
-		atSize =70,
+		atSize = 70,
 
 		InitTurnActionCnt = 4,
+
+		_true = 1,
+		_false = 0,
 	};
 
 	int32 TurnActionCount = Param::InitTurnActionCnt;
@@ -47,6 +53,12 @@ private:
 	bool InitFlg = false;
 	food _FoodObj;
 	Water _WaterObj;
+	Army _ArmyObj;
+	AntNestBoad _NestObj;
+
+	Color NestOpenButtonColor[2];
+
+	bool NestOpenFlg;
 
 	Circle nobCircle;
 	Circle gfbCircle;

@@ -7,15 +7,15 @@
 void Main()
 {
 
-	int32 WindowSizeH = 600;
-	int32 WindowSizeW = 1000;
+	int32 WindowSizeH = 768;
+	int32 WindowSizeW = 1024;
 	//ウィンドウサイズの再設定
 	Window::Resize(WindowSizeW, WindowSizeH);
 
 	// 背景の色を設定する | Set the background color
 	Scene::SetBackground(ColorF{ 0.6, 0.8, 0.7 });
 
-	AntNestBoad aNest;
+	//AntNestBoad aNest;
 
 	Choser cButton;
 
@@ -25,12 +25,9 @@ void Main()
 
 	while (System::Update())
 	{
-		aNest.Draw();
-		cButton.NestOpenButton();
-		cButton.GetFoodButton();
-		cButton.GetWaterButton();
-		cButton.BuildButton();
-		cButton.ArmyTraning();
+
+		cButton.Draw();
+
 
 		cButton.OnClicked();
 	}
