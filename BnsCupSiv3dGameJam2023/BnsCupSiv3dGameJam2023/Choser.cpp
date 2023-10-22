@@ -27,10 +27,10 @@ void Choser::GetFoodButton() {
 }
 
 
-void Choser::GetWaterButton() {
+void Choser::GetResourceButton() {
 	if (InitFlg) {
-		gwbCircle.draw(ColorF(0.7, 0.7, 1.0));
-		gwbCircle.drawFrame(2, ColorF(0.1));
+		grbCircle.draw(ColorF(0.7, 0.7, 1.0));
+		grbCircle.drawFrame(2, ColorF(0.1));
 	}
 }
 
@@ -62,10 +62,11 @@ void Choser::Draw()
 {
 	NestOpenButton();
 	GetFoodButton();
-	GetWaterButton();
+	GetResourceButton();
 	BuildButton();
 	ArmyTraning();
 	_NestObj.Draw();
+	InfoDraw();
 }
 
 
@@ -80,9 +81,9 @@ void Choser::Init() {
 	gfbCircle = circle2;
 
 
-	Circle circle3{ Choser::Param::gwbX + Choser::Param::gwbSize / 2 , Choser::Param::gfbY + Choser::Param::gwbSize / 2 ,Choser::Param::gwbSize };
+	Circle circle3{ Choser::Param::grbX + Choser::Param::grbSize / 2 , Choser::Param::gfbY + Choser::Param::grbSize / 2 ,Choser::Param::grbSize };
 
-	gwbCircle = circle3;
+	grbCircle = circle3;
 
 	Circle circle4{ Choser::Param::bbX + Choser::Param::bbSize / 2 , Choser::Param::bbY + Choser::Param::bbSize / 2 , Choser::Param::bbSize };
 
@@ -104,6 +105,8 @@ void Choser::Init() {
 
 	NestOpenFlg = false;
 
+	WeekTurnMax = Choser::Param::InitTurnActionCnt;
+
 	_NestObj.Init();
 
 	InitFlg = true;
@@ -121,17 +124,21 @@ void Choser::OnClicked() {
 
 			--TurnActionCount;
 		}
-		//水の調達ボタンクリック
-		if (gwbCircle.leftClicked()) {
-			_WaterObj.SearchWater();
+		//子供ボタンクリック
+		if (grbCircle.leftClicked()) {
+			if ((_ResourceObj.GetResouceCnt() + _ArmyObj.GetArmyCnt()) < _NestObj.GetHouseCnt()) {
+				_ResourceObj.SearchResource();
 
-			--TurnActionCount;
+				--TurnActionCount;
+			}
 		}
 		//アーミートレーニングサークルクリック
 		if (atCircle.leftClicked()) {
-			_ArmyObj.ArmyTraningOnClicked();
-
-			--TurnActionCount;
+			if (_ResourceObj.GetResouceCnt() > 0) {
+				_ArmyObj.ArmyTraningOnClicked();
+				_ResourceObj.UseResource();
+				--TurnActionCount;
+			}
 		}
 		//ネストオープンサークルクリック
 		if (nobCircle.leftClicked()) {
@@ -163,7 +170,7 @@ void Choser::OnClicked() {
 				break;
 			}
 		}
-
+		//ビルドオープンボタン実装
 		if (_NestObj.BuildMouseOveredChangeColor(NestBuildFlg)) {
 			--TurnActionCount;
 			NestBuildFlg = false;
@@ -177,8 +184,37 @@ void Choser::OnClicked() {
 }
 
 
+void Choser::TurnAdm() {
+	if (TurnActionCount == 0) {
+		++WeekCnt;
+		TurnActionCount = WeekTurnMax;
+	}
+	if (WeekCnt % 4 == 0 && WeekCnt != 0) {
+		Print << U"一か月経過";
+		DebugPrint(WeekCnt, U"WeekCnt");
+	}
+}
+
 void Choser::Run() {
 	OnClicked();
 
-	//_NestObj.MouseOveredChangeColor(NestOpenFlg);
+	TurnAdm();
+}
+
+
+void Choser::InfoDraw() {
+	
+
+
+	foodtex.scaled(0.5).drawAt(800, 50);
+	font(U"{}"_fmt(_FoodObj.GetFoodCnt())).draw(50, 830, 20);
+
+	AntTex.scaled(0.5).drawAt(800, 100);
+	font(U"{}"_fmt(_ResourceObj.GetResouceCnt())).draw(50, 830, 80);
+
+	ArmyTex.scaled(0.5).drawAt(900, 50);
+	font(U"{}"_fmt(_ArmyObj.GetArmyCnt())).draw(50, 930, 20);
+
+	HouseTex.scaled(0.5).drawAt(900, 110);
+	font(U"{}"_fmt(_NestObj.GetHouseCnt())).draw(50, 930, 80);
 }

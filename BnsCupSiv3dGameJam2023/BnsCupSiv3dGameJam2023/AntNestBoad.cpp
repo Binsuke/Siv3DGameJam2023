@@ -94,6 +94,7 @@ bool AntNestBoad::BuildOnClicked(int x, int y) {
 		NestData[x][y] = eNestData::Build;
 		iColor[x][y] = iColorPicker[eNestData::cpBuild];
 		fColor[x][y] = fColorPicker[eNestData::cpBuild];
+		++HouseCnt;
 		BoadUpdate(x, y);
 		return true;
 	}

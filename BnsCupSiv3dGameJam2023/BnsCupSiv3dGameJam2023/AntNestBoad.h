@@ -55,6 +55,9 @@ private:
 
 	bool InitFlg = false;
 
+	int32 HouseCnt = 0;
+
+
 	bool isValid(int32 x,int32 y);
 
 	void InitCanOpenSet(int x, int y);
@@ -73,6 +76,10 @@ public:
 	void BoadUpdate(int32 x,int32 y);
 
 	void BoadOpen(int x, int y);
+
+	int32 GetHouseCnt() {
+		return HouseCnt;
+	}
 
 	//void SearchCanOpenBlock();
 	//void CheckBlockState( int32 x, int32 y);
