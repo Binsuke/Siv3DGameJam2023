@@ -3,16 +3,7 @@ class AntNestBoad
 {
 public:
 	AntNestBoad() {
-		for (int x = 0; x < NestSize::_W; x++) {
-			for (int y = 0; y < NestSize::_H; y++) {
-				if (x == 4 && y == 0) {
-					NestData[x][y] = eNestData::Open;
-				}
-				else {
-					NestData[x][y] = eNestData::Close;
-				}
-			}
-		}
+		BoadClear();
 	}
 	void Init();
 private:
@@ -22,17 +13,22 @@ private:
 		 Pos_TopLeft_X = 70,
 		 Pos_TopLeft_Y = 170,
 
-		 
+		 InitPosx = 4,
+		 InitPosY = 0,
+
 	};
 
 	const enum eNestData {
 		Close = 0,
 		Open = 1,
+		canOpen = 2,
 
-		Color_Pattern = 3,
+		Color_Pattern = 4,
 		cpClose = 0,
 		cpOpen = 1,
+		cpCanOpen = 0,
 		cpMouseOver = 2,
+		cpMouseOverCant = 3,
 	};
 	//のちのちテクスチャーに変更するかも
 	
@@ -56,11 +52,23 @@ private:
 
 	bool InitFlg = false;
 
+	bool isValid(int32 x,int32 y);
+
+	void InitCanOpenSet(int x, int y);
+
+	
 	//const Texture texture{U}
 public:
 	void Draw();
 	void OnClicked();
 	void MouseOveredChangeColor(bool OpenFlg);
 
+	void BoadClear();
+	void BoadUpdate(int32 x,int32 y);
+
+	void BoadOpen(int x, int y);
+
+	//void SearchCanOpenBlock();
+	//void CheckBlockState( int32 x, int32 y);
 };
 
