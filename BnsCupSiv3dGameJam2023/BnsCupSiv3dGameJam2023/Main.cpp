@@ -7,8 +7,8 @@
 void Main()
 {
 
-	int32 WindowSizeH = 768;
-	int32 WindowSizeW = 1024;
+	int32 WindowSizeH = 960;//768;
+	int32 WindowSizeW = 1280;//1024;
 	//ウィンドウサイズの再設定
 	Window::Resize(WindowSizeW, WindowSizeH);
 

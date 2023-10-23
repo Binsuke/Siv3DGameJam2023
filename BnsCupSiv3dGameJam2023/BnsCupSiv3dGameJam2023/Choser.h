@@ -4,6 +4,7 @@
 #include "food.h"
 #include "Army.h"
 #include "AntNestBoad.h"
+#include "Enemy.h"
 
 class Choser
 {
@@ -23,28 +24,30 @@ public:
 
 private:
 	const enum Param {
-		NestOpenButtonY = 50,
-		NestOpenButtonX = 50,
+		NestOpenButtonY = 130,
+		NestOpenButtonX = 70,//300,
 		nobSize = 70,
 
-		gfbY = 50,
-		gfbX = 200,
+		gfbY = 130,
+		gfbX = Param::NestOpenButtonX + 150,
 		gfbSize = 70,
 
-		grbY = 50,
-		grbX = 350,
+		grbY = 130,
+		grbX = Param::gfbX + 150,
 		grbSize = 70,
 
-		bbY = 50,
-		bbX = 500,
+		bbY = 130,
+		bbX = Param::grbX + 150,
 		bbSize = 70,
 
-		atY = 50,
-		atX = 650,
+		atY = 130,
+		atX = Param::bbX + 150,
 		atSize = 70,
 
 		InitTurnActionCnt = 4,
 
+		DefaultFoodWeight = 4,
+		Ant_FoodWeight = 2,
 		_true = 1,
 		_false = 0,
 	};
@@ -53,7 +56,12 @@ private:
 	const Texture AntTex{ U"🐜"_emoji };
 	const Texture ArmyTex{ U"💂"_emoji };
 	const Texture HouseTex{ U"🏠"_emoji };
+	const Texture NextFoodTex{ U"🍴"_emoji };
+	const Texture NextEnemyTex{ U"☠"_emoji };
 
+
+	//Rect NextMonthRectIn;
+	//Rect NextMonthRectOut;
 	const Font font{ FontMethod::MSDF,48 };
 
 	
@@ -68,6 +76,7 @@ private:
 	cResource _ResourceObj;
 	Army _ArmyObj;
 	AntNestBoad _NestObj;
+	Enemy _EnemyObj;
 
 
 	//ネストオープンボタンのアクティブと非アクティブの色変化

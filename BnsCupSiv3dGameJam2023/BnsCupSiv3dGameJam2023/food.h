@@ -13,8 +13,16 @@ public:
 	void SetNextFoodPoint(int iCount) {
 		_NextNeedFoodPoint = iCount;
 	}
-	void SetClearFoodPoint(int iCount) {
-		_ClearFoodPoint = ~iCount;
+	void SetGameClearFoodPoint(int iCount) {
+		_ClearFoodPoint = iCount;
+	}
+
+	int32 GetNextNeedFoodPoint() {
+		return _NextNeedFoodPoint;
+	}
+
+	void AddNextFoodPoint(int iCount) {
+		_NextNeedFoodPoint += iCount;
 	}
 
 	void SearchFood();

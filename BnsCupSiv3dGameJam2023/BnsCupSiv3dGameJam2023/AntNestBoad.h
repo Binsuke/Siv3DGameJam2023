@@ -11,7 +11,7 @@ private:
 		 SizeH = 90,
 		 SizeW = 90,
 		 Pos_TopLeft_X = 70,
-		 Pos_TopLeft_Y = 170,
+		 Pos_TopLeft_Y = 250,//170,
 
 		 InitPosx = 4,
 		 InitPosY = 0,
@@ -41,7 +41,7 @@ private:
 	//const int32 NestSizeH = 80;
 	const enum NestSize {
 		_W = 9,
-		_H = 6,
+		_H = 7,
 	};
 	Color iColorPicker[eNestData::Color_Pattern];
 	Color fColorPicker[eNestData::Color_Pattern];
