@@ -14,5 +14,19 @@ public:
 	int32 GetArmyCnt() {
 		return _Count;
 	}
+	void DecArmy() {
+		--_Count;
+		if (_Count < 0) {
+			_Count = 0;
+		}
+	}
+
+	void DecArmy(int32 iCount) {
+		_Count -= iCount;
+
+		if (_Count < 0) {
+			_Count = 0;
+		}
+	}
 };
 

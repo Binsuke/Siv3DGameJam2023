@@ -9,11 +9,7 @@
 class Choser
 {
 public:
-	void NestOpenButton();
-	void GetFoodButton();
-	void GetResourceButton();
-	void BuildButton();
-	void ArmyTraning();
+	
 
 	void Init();
 
@@ -50,6 +46,17 @@ private:
 		Ant_FoodWeight = 2,
 		_true = 1,
 		_false = 0,
+
+		marX = 100,
+		marY = 100,
+		marW = 800,
+		marH = 500,
+
+		marOKW = 100,
+		marOKH = 50,
+		marOKX = marX + marW - marOKW * 2,
+		marOKY = marY + marH - marOKH * 2,
+
 	};
 
 	const Texture foodtex{ U"🍖"_emoji };
@@ -69,8 +76,14 @@ private:
 	int32 WeekTurnMax;//１週間にできる手番の数
 
 	int32 TurnActionCount = Param::InitTurnActionCnt;
+
+	int32 mGetFood = 0, mLostFood = 0,mLostFoodEnemy = 0, mLostArmy = 0, mLostResource = 0;
+
+	bool MonthResultFlg = false;
 	//初期化フラグ
 	bool InitFlg = false;
+
+	bool MonthActionFlg = false;
 	//各関数オブジェクト
 	food _FoodObj;
 	cResource _ResourceObj;
@@ -98,10 +111,25 @@ private:
 	Circle bbCircle;
 	Circle atCircle;
 
+	//リザルト用
+	Rect marRect;
+	Rect marOKRect;
+
 	//Function
 	void OnClicked();
 	void TurnAdm();
 
 	void InfoDraw();
+	void NestOpenButton();
+	void GetFoodButton();
+	void GetResourceButton();
+	void BuildButton();
+	void ArmyTraning();
+
+	void MonthAction();
+	void MonthActionResultSet(int32 GetFood,int32 LostFood,int32 LostFoodEnemy,int32 LostArmy,int32 LostResource);
+	bool MonthActionResultDraw();
+
+	void UpdateNextFoodPoint();
 };
 

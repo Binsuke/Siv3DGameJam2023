@@ -25,7 +25,21 @@ public:
 		_NextNeedFoodPoint += iCount;
 	}
 
+	void AddFood(int32 iCount) {
+		_Count += iCount;
+	}
+
+	void DecFood(int32 iCount) {
+		_Count -= iCount;
+	}
+
+	void SetFood(int32 iCount) {
+		_Count = iCount;
+	}
+
 	void SearchFood();
+
+
 
 	int32 GetFoodCnt() {
 		return _Count;
