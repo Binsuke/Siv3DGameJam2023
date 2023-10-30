@@ -75,5 +75,8 @@ public:
 		}
 		return tmp;
 	}
+
+	int32 GetEnoughFood(int32 iFoodCnt);
+		
 };
 

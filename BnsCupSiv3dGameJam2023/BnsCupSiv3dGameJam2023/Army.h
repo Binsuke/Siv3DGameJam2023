@@ -3,6 +3,7 @@ class Army
 {
 private:
 	int32 _Count=0;
+	int32 _NeedFood = 2;
 	const enum Param {
 		TraningCnt = 1,
 	};
@@ -27,6 +28,10 @@ public:
 		if (_Count < 0) {
 			_Count = 0;
 		}
+	}
+
+	int32 GetAllNeedFood() {
+		return (_Count * _NeedFood);
 	}
 };
 

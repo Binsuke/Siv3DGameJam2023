@@ -281,17 +281,18 @@ void Choser::MonthAction() {
 
 		int RandamTmp = Random(100);
 
-		if (25 * Battletmp + 50 < RandamTmp) {//数が多くなれば兵隊が減る確率がなくなる　起訴確率が５０％
+		if (25 * Battletmp + 50 < RandamTmp && _ArmyObj.GetArmyCnt() >= 1) {//数が多くなれば兵隊が減る確率がなくなる　起訴確率が５０％
 
 			LostArmy += 1;
 			_ArmyObj.DecArmy();	//確率で兵隊ありが一匹減少
-			UpdateNextFoodPoint();
 		}
+		UpdateNextFoodPoint();
+
 	}
 	else {//兵の数が敵以下だった場合
-		if ((_EnemyObj.GetCount() * 2) <= _FoodObj.GetFoodCnt()) {//兵の数が足りなかった場合　食料が要求される食料以上だったら
-			_FoodObj.DecFood(_EnemyObj.GetCount() * 2);//敵の数＊２の食料を渡す
-			LostFoodEnemy = _EnemyObj.GetCount() * 2;//失った食料のリザルト用変数
+		if (_EnemyObj.GetAllNeedFood() <= _FoodObj.GetFoodCnt()) {//兵の数が足りなかった場合　食料が要求される食料以上だったら
+			_FoodObj.DecFood(_EnemyObj.GetAllNeedFood());//敵の要求数の食料を渡す
+			LostFoodEnemy = _EnemyObj.GetAllNeedFood();//失った食料のリザルト用変数
 		}
 		else {								//食料が足りなかった場合自分のアリが減少
 			//int32 EnemyNeedFoodPoint = _EnemyObj.GetCount() - _FoodObj.GetFoodCnt() / 2;//食料分減少を減らす
@@ -305,9 +306,9 @@ void Choser::MonthAction() {
 
 			//残りのマイナス分の計算をしないといけないので
 
-			if (tmp < 0) {//一応計算された数値がマイナスかを確認
+			//if (tmp < 0) {//一応計算された数値がマイナスかを確認
 				tmp *= -1;//プラスマイナスを反転
-			}
+			//}
 			
 			int32 tmp2;// = _ResourceObj.GetResouceCnt() - tmp;//残りのアリの数から引いてあげる
 
@@ -315,7 +316,7 @@ void Choser::MonthAction() {
 			//	tmp2 = 0;
 			//}
 
-			if (_ResourceObj.GetResouceCnt() - tmp <= 0) {
+			if (_ResourceObj.GetResouceCnt() - tmp <= 0) {//全体の一般アリの数から残りの敵の数を引いた数が０以下だった場合
 				LostResource += _ResourceObj.GetResouceCnt();//失うアリの数が多すぎた場合はすべてのアリを失うのをリザルトに入れる
 				tmp2 = _ResourceObj.GetResouceCnt();//減らす数を表示
 			}
@@ -325,7 +326,6 @@ void Choser::MonthAction() {
 			}
 			_ResourceObj.DecResource(tmp2);//テンプをセット　　＊ここの使用をリソースクラスをキュー構造にして先いれ先出し構造にしたい
 																//そうすることで大人を優先的に減少できる
-
 			UpdateNextFoodPoint();
 		}
 	}
@@ -337,12 +337,15 @@ void Choser::MonthAction() {
 		_FoodObj.SetFood(tmp);												//食料の数を再セット
 	}
 	else {//食料が足りなかった場合
-		int32  NotEnoughFoodPoint = (_FoodObj.GetNextNeedFoodPoint() - _FoodObj.GetFoodCnt());// / 2;//足りない食料の数に対するポイントを設定
-																								//２で割っているのは大人のアリの食料消費が２に設定されているので
-																								//子供一人分は計算から除外する
-		//if (NotEnoughFoodPoint == 0) {//ただし食料消費が子供一人分足りない場合は０ではなく１ポイントに修正
-		//	NotEnoughFoodPoint = 1;
-		//}
+		int32 Havefood = _FoodObj.GetFoodCnt() - Choser::Param::DefaultFoodWeight;
+		if (Havefood < 0) {
+			Havefood = 0;
+		}
+		int32  NotEnoughFoodPoint = _ResourceObj.GetEnoughFood(Havefood) ;//一般アリに足りない食料数を計算
+																							
+		NotEnoughFoodPoint += _ArmyObj.GetAllNeedFood();
+
+		NotEnoughFoodPoint /= 2;//大人一人当たりの食料消費係数２で割って実際に減少させる人数を出す
 
 		int32 tmp = _ArmyObj.GetArmyCnt() - NotEnoughFoodPoint;//足りないポイントと兵隊の数を比較するためにいれる
 
@@ -371,6 +374,20 @@ void Choser::MonthAction() {
 			_ResourceObj.DecResource(tmp2);//その後全体からアリを減らす
 
 		}
+		int32 HaveFood = _FoodObj.GetFoodCnt() - Choser::Param::DefaultFoodWeight;
+		if (HaveFood < 0) {
+			HaveFood = 0;
+		}
+		int32 tmp3 = _FoodObj.GetFoodCnt() - _ResourceObj.GetEnoughFood(HaveFood)-_ArmyObj.GetAllNeedFood();//全体から足りなかった食料を減らすと残りの食料がわかる
+		if (tmp3 >= 1) {
+			LostFood += tmp3;
+		}
+		else {//食料がマイナス以下になってしまった場合は０に補正
+			tmp3 = 0;
+			LostFood += tmp3;
+		}
+		_FoodObj.SetFood(tmp3);//食料の残りをセット
+
 		UpdateNextFoodPoint();//処理が終わったら必要な食料のアップデート
 	}
 	MonthActionResultSet(GetFood, LostFood, LostFoodEnemy,LostArmy, LostResource);
