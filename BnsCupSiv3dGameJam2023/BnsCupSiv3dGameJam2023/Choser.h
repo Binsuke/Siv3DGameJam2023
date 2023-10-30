@@ -49,7 +49,7 @@ private:
 
 		marX = 100,
 		marY = 100,
-		marW = 800,
+		marW = 900,
 		marH = 500,
 
 		marOKW = 100,
@@ -84,6 +84,7 @@ private:
 	bool InitFlg = false;
 
 	bool MonthActionFlg = false;
+	bool MonthStartFlg = false;
 	//各関数オブジェクト
 	food _FoodObj;
 	cResource _ResourceObj;
@@ -131,5 +132,10 @@ private:
 	bool MonthActionResultDraw();
 
 	void UpdateNextFoodPoint();
+
+	void MonthStartStatusSet();
+	void MonthStartStatusDraw();
+
+	void DrawInfoGrid(ColorF inColor,ColorF outColor,ColorF inColor2,ColorF outColor2);
 };
 

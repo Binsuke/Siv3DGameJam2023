@@ -68,6 +68,7 @@ void Choser::Draw()
 	_NestObj.Draw();
 	InfoDraw();
 	MonthActionResultDraw();
+	MonthStartStatusDraw();
 }
 
 
@@ -118,7 +119,7 @@ void Choser::Init() {
 
 	_FoodObj.SetNextFoodPoint(Choser::Param::DefaultFoodWeight);
 
-	_EnemyObj.SetNextEnemyCount(2);
+	MonthStartStatusSet();//月初めのステータスの設定
 
 	InitFlg = true;
 }
@@ -139,13 +140,14 @@ void Choser::OnClicked() {
 		if (grbCircle.leftClicked()) {
 			if ((_ResourceObj.GetResouceCnt() + _ArmyObj.GetArmyCnt()) < _NestObj.GetHouseCnt()) {
 				_ResourceObj.SearchResource();
-				_FoodObj.AddNextFoodPoint(Choser::Param::Ant_FoodWeight / 2);//子供なので
+				//_FoodObj.AddNextFoodPoint(Choser::Param::Ant_FoodWeight / 2);//子供なので
+				UpdateNextFoodPoint();
 				--TurnActionCount;
 			}
 		}
 		//アーミートレーニングサークルクリック
 		if (atCircle.leftClicked()) {
-			if (_ResourceObj.GetResouceCnt() > 0) {
+			if (_ResourceObj.GetResourceParentCnt() > 0) {//大人のアリがいたら押せる
 				_ArmyObj.ArmyTraningOnClicked();
 				_ResourceObj.UseResource();
 				--TurnActionCount;
@@ -205,6 +207,7 @@ void Choser::TurnAdm() {
 		if (MonthActionFlg == false) {
 			MonthActionFlg = true;
 			MonthAction();
+			MonthStartStatusSet();
 			//DebugPrint(MonthActionFlg, U"WeekActionFlg");
 
 		}
@@ -291,8 +294,8 @@ void Choser::MonthAction() {
 			LostFoodEnemy = _EnemyObj.GetCount() * 2;//失った食料のリザルト用変数
 		}
 		else {								//食料が足りなかった場合自分のアリが減少
-
-			int32 tmp = _ArmyObj.GetArmyCnt() - _EnemyObj.GetCount();//まずは兵隊ありの数を減らした場合の残りいくつマイナスなのかを保存しておく
+			//int32 EnemyNeedFoodPoint = _EnemyObj.GetCount() - _FoodObj.GetFoodCnt() / 2;//食料分減少を減らす
+			int32 tmp = _ArmyObj.GetArmyCnt() -_EnemyObj.GetCount();//まずは兵隊ありの数を減らした場合の残りいくつマイナスなのかを保存しておく
 
 
 			LostArmy += _ArmyObj.GetArmyCnt();//減らす前にhらした兵士の数のリザルトを変数に足しこむ
@@ -306,19 +309,21 @@ void Choser::MonthAction() {
 				tmp *= -1;//プラスマイナスを反転
 			}
 			
-			int32 tmp2 = _ResourceObj.GetResouceCnt() - tmp;//残りのアリの数から引いてあげる
+			int32 tmp2;// = _ResourceObj.GetResouceCnt() - tmp;//残りのアリの数から引いてあげる
 
-			if (tmp2 < 0){//マイナス以下にはできないので補正 
-				tmp2 = 0;
-			}
+			//if (tmp2 < 0){//マイナス以下にはできないので補正 
+			//	tmp2 = 0;
+			//}
 
 			if (_ResourceObj.GetResouceCnt() - tmp <= 0) {
 				LostResource += _ResourceObj.GetResouceCnt();//失うアリの数が多すぎた場合はすべてのアリを失うのをリザルトに入れる
+				tmp2 = _ResourceObj.GetResouceCnt();//減らす数を表示
 			}
 			else {
 				LostResource += tmp;//生き残りがいる場合は減少する数をリザルト表示用に追加する
+				tmp2 = tmp;//減らす数を変数に格納
 			}
-			_ResourceObj.SetResource(tmp2);//テンプをセット　　＊ここの使用をリソースクラスをキュー構造にして先いれ先出し構造にしたい
+			_ResourceObj.DecResource(tmp2);//テンプをセット　　＊ここの使用をリソースクラスをキュー構造にして先いれ先出し構造にしたい
 																//そうすることで大人を優先的に減少できる
 
 			UpdateNextFoodPoint();
@@ -332,12 +337,12 @@ void Choser::MonthAction() {
 		_FoodObj.SetFood(tmp);												//食料の数を再セット
 	}
 	else {//食料が足りなかった場合
-		int32  NotEnoughFoodPoint = (_FoodObj.GetNextNeedFoodPoint() - _FoodObj.GetFoodCnt()) / 2;//足りない食料の数に対するポイントを設定
+		int32  NotEnoughFoodPoint = (_FoodObj.GetNextNeedFoodPoint() - _FoodObj.GetFoodCnt());// / 2;//足りない食料の数に対するポイントを設定
 																								//２で割っているのは大人のアリの食料消費が２に設定されているので
 																								//子供一人分は計算から除外する
-		if (NotEnoughFoodPoint == 0) {//ただし食料消費が子供一人分足りない場合は０ではなく１ポイントに修正
-			NotEnoughFoodPoint = 1;
-		}
+		//if (NotEnoughFoodPoint == 0) {//ただし食料消費が子供一人分足りない場合は０ではなく１ポイントに修正
+		//	NotEnoughFoodPoint = 1;
+		//}
 
 		int32 tmp = _ArmyObj.GetArmyCnt() - NotEnoughFoodPoint;//足りないポイントと兵隊の数を比較するためにいれる
 
@@ -350,18 +355,20 @@ void Choser::MonthAction() {
 			LostArmy += _ArmyObj.GetArmyCnt();//兵隊の数をすべて失った数に足しこむ
 			_ArmyObj.DecArmy(_ArmyObj.GetArmyCnt());//兵隊をまずは０にする
 
-			int32 tmp2 = _ResourceObj.GetResouceCnt() - tmp;//一般アリの数から兵隊数を減らしたうえで足りないポイント数の比較用
-			if (tmp2 < 0) {//マイナスになるようなら０に補正
-				tmp2 = 0;
-			}
+			int32 tmp2;// = _ResourceObj.GetResouceCnt() - tmp;//一般アリの数から兵隊数を減らしたうえで足りないポイント数の比較用
+			//if (tmp2 < 0) {//マイナスになるようなら０に補正
+			//	tmp2 = 0;
+			//}
 			if (_ResourceObj.GetResouceCnt() - tmp <= 0) {//リソース以上の減少の場合は補正して減少させる
 				LostResource += _ResourceObj.GetResouceCnt();
+				tmp2 = _ResourceObj.GetResouceCnt();//全部のアリが死ぬのでその数をセット
 			}
 			else {
 				LostResource += tmp;
+				tmp2 = tmp;//全部死なない場合はその数を変数に格納
 			}
 
-			_ResourceObj.SetResource(tmp2);//その後全体からアリを減らす
+			_ResourceObj.DecResource(tmp2);//その後全体からアリを減らす
 
 		}
 		UpdateNextFoodPoint();//処理が終わったら必要な食料のアップデート
@@ -372,7 +379,7 @@ void Choser::MonthAction() {
 
 void Choser::UpdateNextFoodPoint() {
 
-	int32 tmp = _ArmyObj.GetArmyCnt() * 2 + _ResourceObj.GetResourceParentCnt() * 2 + _ResourceObj.GetResourceChildrenCnt() + Choser::Param::DefaultFoodWeight;
+	int32 tmp = _ArmyObj.GetArmyCnt() * 2 + _ResourceObj.GetNeedFood() + Choser::Param::DefaultFoodWeight;
 	_FoodObj.SetNextFoodPoint(tmp);
 }
 
@@ -403,9 +410,53 @@ bool Choser::MonthActionResultDraw() {
 		font(U"月末の失った一般アリの数:{}"_fmt(mLostResource)).draw(50,marX +30, marY + 250);
 
 		if (marOKRect.leftClicked()) {
+			MouseL.clearInput();
 			MonthResultFlg = false;
 		}
 	}
 
 	return false;
 }
+
+
+void Choser::MonthStartStatusSet() {//月の初めの様々なステータスを決定する
+
+	int Randomtmp;//0~5の値を入手
+
+	if (WeekCnt <= 12) {//３か月までは
+		Randomtmp = Random(100) % 3;//最大2の値
+	}
+	else {
+		Randomtmp = Random(100) % 8;//仮
+	}
+
+	_EnemyObj.SetNextEnemyCount(Randomtmp);
+
+	MonthStartFlg = true;
+}
+
+
+void Choser::MonthStartStatusDraw() {
+	if (MonthStartFlg == true && MonthResultFlg == false) {
+		DrawInfoGrid(ColorF(Palette::Darkblue), ColorF(Palette::Skyblue), ColorF(0.9), ColorF(0.1));
+
+		font(U"月末に襲ってくる敵の数は:{}"_fmt(_EnemyObj.GetCount())).draw(50, marX + 30, marY + 100);
+
+		if (marOKRect.leftClicked()) {
+			MouseL.clearInput();
+			MonthStartFlg = false;
+		}
+	}
+
+}
+
+
+void Choser::DrawInfoGrid(ColorF inColor, ColorF outColor,ColorF inColor2,ColorF outColor2) {
+	marRect.draw(inColor);
+	marRect.drawFrame(5,outColor);
+
+	marOKRect.draw(inColor2);
+	marOKRect.drawFrame(5,outColor2);
+}
+
+//.upで取れる
