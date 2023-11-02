@@ -16,6 +16,12 @@ public:
 			NeedFood = 2;//４週間たったら必要食料を増やす
 		}
 	}
+	void AgeUpdate(int32 iCount) {
+		Age += iCount;
+		if (Age >= 4) {
+			NeedFood = 2;
+		}
+	}
 };
 
 
@@ -23,7 +29,7 @@ class cResource
 {
 	int32 _Count=0;
 	int32 _ChildCount = 0;
-	int32 _ReserchCnt = 0;
+	int32 _ReserchCnt = 0;//食料探索を行える大人アリのカウント
 private:
 	Array<ResourceData> rDataArray;
 	
@@ -37,7 +43,7 @@ public:
 	void UseResource() {
 		rDataArray.pop_front_N(1);
 		--_Count;
-		--_ReserchCnt;
+		--_ReserchCnt;			
 	}
 
 	int32 GetNeedFood();
@@ -85,6 +91,8 @@ public:
 	void UpdateReserchCnt();
 
 	int32 GetReserchCnt();
+
+	void GetSeachBonus();
 
 	void UseReserch() {
 		--_ReserchCnt;

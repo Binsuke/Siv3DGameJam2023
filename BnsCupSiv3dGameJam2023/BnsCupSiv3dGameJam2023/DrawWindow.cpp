@@ -25,13 +25,18 @@ void DrawWindow::Draw( String str) {
 
 
 	font(U"{}"_fmt(str)).draw(50, _X + 30, _Y + 100);
+
+	DrawFlg = true;
 }
 
 
 bool DrawWindow::OnClicked() {
-	if (_RectOKWindow.leftClicked()) {
-		MouseL.clearInput();
-		return true;
+	if (DrawFlg) {
+		if (_RectOKWindow.leftClicked()) {
+			MouseL.clearInput();
+			DrawFlg = false;
+			return true;
+		}
 	}
 	return false;
 }

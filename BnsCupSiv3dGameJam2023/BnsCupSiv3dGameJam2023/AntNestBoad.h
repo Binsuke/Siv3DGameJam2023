@@ -135,6 +135,9 @@ public:
 	void BoadClear();
 	void BoadUpdate(int32 x,int32 y);
 
+	bool GetBonusDrawFlg() {
+		return BonusDrawFlg;
+	}
 
 	int32 SearchBonus(int32 x,int32 y);
 

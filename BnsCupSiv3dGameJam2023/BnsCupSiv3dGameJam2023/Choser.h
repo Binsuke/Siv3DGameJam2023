@@ -59,6 +59,9 @@ private:
 
 	};
 
+	const enum Bonus {
+		BonusFoodPoint = 3,
+	};
 	const Texture foodtex{ U"🍖"_emoji };
 	const Texture AntTex{ U"🐜"_emoji };
 	const Texture ArmyTex{ U"💂"_emoji };

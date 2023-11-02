@@ -421,7 +421,7 @@ void Choser::MonthActionResultSet(int32 iGetFood, int32 iLostFood, int32 iLostFo
 }
 
 bool Choser::MonthActionResultDraw() {
-	if (MonthResultFlg) {
+	if (MonthResultFlg && _NestObj.GetBonusDrawFlg() == false) {
 		marRect.draw(ColorF(Palette::Skyblue));
 		marRect.drawFrame(5,ColorF(Palette::Darkblue));
 
@@ -465,7 +465,7 @@ void Choser::MonthStartStatusSet() {//月の初めの様々なステータスを
 
 
 void Choser::MonthStartStatusDraw() {
-	if (MonthStartFlg == true && MonthResultFlg == false) {
+	if (MonthStartFlg == true && MonthResultFlg == false && _NestObj.GetBonusDrawFlg() == false) {
 		DrawInfoGrid(ColorF(Palette::Darkblue), ColorF(Palette::Skyblue), ColorF(0.9), ColorF(0.1));
 
 		font(U"月末に襲ってくる敵の数は:{}"_fmt(_EnemyObj.GetCount())).draw(50, marX + 30, marY + 100);
@@ -490,5 +490,21 @@ void Choser::DrawInfoGrid(ColorF inColor, ColorF outColor,ColorF inColor2,ColorF
 
 
 void Choser::BonusFunc() {
-	_NestObj.SearchBonus();//戻り値が探索で発見したものになる
+	switch (_NestObj.SearchBonus()) {//戻り値が探索で発見したものになる
+	case AntNestBoad::eNestBonusData::FOOD://見つけたのが食料なら
+		_FoodObj.AddFood(Choser::Bonus::BonusFoodPoint);//とりあえず３にしてある
+		break;
+	case AntNestBoad::eNestBonusData::ANT://アリの仕様はリソースクラスに追加するので後回し
+		_ResourceObj.GetSeachBonus();
+		break;
+	case AntNestBoad::eNestBonusData::UnkFood:
+		_FoodObj.AddFood(Choser::Bonus::BonusFoodPoint);
+		break;
+	case AntNestBoad::eNestBonusData::UnkANT://上記と同じ
+		_ResourceObj.GetSeachBonus();
+		break;
+	case AntNestBoad::eNestBonusData::UnkEnemy://とりあえず隠れている敵を見つけたときは敵を１増やす
+		_EnemyObj.AddEnemy(1);
+		break;
+	}
 }

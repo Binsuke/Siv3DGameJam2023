@@ -9,6 +9,7 @@ private:
 	Color _WindowInColor=ColorF(1), _WindowOutColor=ColorF(0);
 	Color _OKWindowInColor = ColorF(0.5), _OKWindowOutColor=ColorF(0.3);
 	const Font font{ FontMethod::MSDF,48 };
+	bool DrawFlg = false;
 public:
 	void InitWindow(int32 iX,int32 iY,int32 iW, int32 iH,int32 iOKX,int32 iOKY,int32 iOKW,int32 iOKH);
 

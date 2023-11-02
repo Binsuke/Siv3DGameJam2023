@@ -15,5 +15,9 @@ public:
 	int32 GetAllNeedFood() {
 		return (_Count * _NeedFood);
 	}
+	void AddEnemy(int32 iCount) {
+		_Count += iCount;
+	}
+
 };
 

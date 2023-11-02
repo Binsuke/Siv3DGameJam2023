@@ -49,3 +49,9 @@ void cResource::UpdateReserchCnt() {
 	_ReserchCnt = GetResourceParentCnt();
 }
 
+void cResource::GetSeachBonus() {
+	++_Count;
+	ResourceData tmpdata;
+	tmpdata.AgeUpdate(4);
+	rDataArray.push_front(tmpdata);
+}

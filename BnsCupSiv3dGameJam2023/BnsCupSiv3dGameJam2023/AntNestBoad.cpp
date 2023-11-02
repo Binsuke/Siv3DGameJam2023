@@ -382,7 +382,9 @@ int32 AntNestBoad::SearchBonus() {
 				BonusDrawFlg = true;
 			}
 			SearchFlg = false;
-			return NestBonusData[_SearchtmpX][_SearchtmpY];
+			int32 returntmp = NestBonusData[_SearchtmpX][_SearchtmpY];
+			//NestBonusData[_SearchtmpX][_SearchtmpY] = eNestBonusData::NONE;
+			return returntmp;
 		}
 		SearchFlg = false;
 	}
@@ -391,23 +393,17 @@ int32 AntNestBoad::SearchBonus() {
 
 
 void AntNestBoad::BonusInfoDraw() {
-	if (BonusInfotmpX >= 0 && BonusInfotmpY >= 0 && BonusDrawFlg) {
-		cDrawWindow.Draw(BonusInfoStr[NestBonusData[BonusInfotmpX][BonusInfotmpY]]);
-		//cDrawWindow.Draw(U"test");
-	}
+	
 
-	//if (cDrawWindow.OnClicked()) {
-	//	//MouseL.clearInput();
-	//	BonusDrawFlg = false;
-	//}
+	
 
 	int32 PosX, PosY;
 
 	if (!BonusInfoDrawInitFlg) {
 		for (int x = 0; x < NestSize::_W; x++) {
 			for (int y = 0; y < NestSize::_H; y++) {
-				PosX = AntNestBoad::Param::Pos_TopLeft_X + AntNestBoad::Param::SizeW * x;
-				PosY = AntNestBoad::Param::Pos_TopLeft_Y + AntNestBoad::Param::SizeH * y;
+				PosX = AntNestBoad::Param::Pos_TopLeft_X + (AntNestBoad::Param::SizeW+10) * x +AntNestBoad::SizeW / 2 ;
+				PosY = AntNestBoad::Param::Pos_TopLeft_Y + (AntNestBoad::Param::SizeH+10) * y +AntNestBoad::SizeH / 2 ;
 
 				switch (NestBonusData[x][y]) {
 				case eNestBonusData::FOOD:
@@ -446,5 +442,16 @@ void AntNestBoad::BonusInfoDraw() {
 		}
 	}
 
+	if (BonusInfotmpX >= 0 && BonusInfotmpY >= 0 && BonusDrawFlg) {
+		cDrawWindow.Draw(BonusInfoStr[NestBonusData[BonusInfotmpX][BonusInfotmpY]]);
+		//cDrawWindow.Draw(U"test");
+	}
+
+	if (cDrawWindow.OnClicked()) {
+		//MouseL.clearInput();//これを入れるとなぜかバグる
+
+		NestBonusData[_SearchtmpX][_SearchtmpY] = eNestBonusData::NONE;
+		BonusDrawFlg = false;
+	}
 	//cDrawWindow.Draw()
 }
