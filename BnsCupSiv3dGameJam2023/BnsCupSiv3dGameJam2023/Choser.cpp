@@ -132,9 +132,11 @@ void Choser::OnClicked() {
 	if (TurnActionCount > 0) {
 		//食べ物の調達ボタンクリック
 		if (gfbCircle.leftClicked()) {
-			_FoodObj.SearchFood();
-
-			--TurnActionCount;
+			if (_ResourceObj.GetReserchCnt() > 0) {
+				_ResourceObj.UseReserch();
+				_FoodObj.SearchFood();
+				--TurnActionCount;
+			}
 		}
 		//子供ボタンクリック
 		if (grbCircle.leftClicked()) {
@@ -147,7 +149,7 @@ void Choser::OnClicked() {
 		}
 		//アーミートレーニングサークルクリック
 		if (atCircle.leftClicked()) {
-			if (_ResourceObj.GetResourceParentCnt() > 0) {//大人のアリがいたら押せる
+			if (_ResourceObj.GetResourceParentCnt() > 0 && _ResourceObj.GetReserchCnt() >0 ) {//大人のアリがいたら押せる
 				_ArmyObj.ArmyTraningOnClicked();
 				_ResourceObj.UseResource();
 				--TurnActionCount;
@@ -198,10 +200,12 @@ void Choser::OnClicked() {
 
 
 void Choser::TurnAdm() {
-	if (TurnActionCount == 0) {
+	bool WeekEndflg = false;
+	if (TurnActionCount == 0) {//週の終わり
 		++WeekCnt;
 		TurnActionCount = WeekTurnMax;
-	}
+		WeekEndflg = true;//ここでアップデートしてしまうと月末の処理があまりよろしくないので下に移す
+		}
 	if (WeekCnt % 4 == 0 && WeekCnt != 0) {
 		Print << U"一か月経過";
 		if (MonthActionFlg == false) {
@@ -219,11 +223,18 @@ void Choser::TurnAdm() {
 		}
 		DebugPrint(MonthActionFlg, U"WeekActionFlg");
 	}
+
+	if (WeekEndflg) {
+		_ResourceObj.WeekEndResourceAgeUpdate();
+		_ResourceObj.UpdateReserchCnt();
+
+	}
+
 }
 
 void Choser::Run() {
 	OnClicked();
-
+	BonusFunc();
 	TurnAdm();
 }
 
@@ -236,13 +247,13 @@ void Choser::InfoDraw() {
 	font(U"{}"_fmt(_FoodObj.GetFoodCnt())).draw(50, 1065, 275);
 
 	AntTex.scaled(0.5).drawAt(1030, 375);
-	font(U"{}"_fmt(_ResourceObj.GetResouceCnt())).draw(50, 1065, 350);
+	font(U"子供:{}\n大人:{}"_fmt(_ResourceObj.GetResourceChildrenCnt(),_ResourceObj.GetResourceParentCnt())).draw(50, 1065, 350);
 
-	ArmyTex.scaled(0.5).drawAt(1030,450);
-	font(U"{}"_fmt(_ArmyObj.GetArmyCnt())).draw(50, 1065, 425);
+	ArmyTex.scaled(0.5).drawAt(1030,525);
+	font(U"{}"_fmt(_ArmyObj.GetArmyCnt())).draw(50, 1065, 500);
 
-	HouseTex.scaled(0.5).drawAt(1030, 525);
-	font(U"{}"_fmt(_NestObj.GetHouseCnt())).draw(50, 1065, 500);
+	HouseTex.scaled(0.5).drawAt(1030, 600);
+	font(U"{}"_fmt(_NestObj.GetHouseCnt())).draw(50, 1065, 575);
 
 
 	font(U"{}月{}週目:残り手番{}回"_fmt((WeekCnt / 4)+1, (WeekCnt % 4)+1, TurnActionCount)).draw(50, 50, 10);
@@ -476,4 +487,8 @@ void Choser::DrawInfoGrid(ColorF inColor, ColorF outColor,ColorF inColor2,ColorF
 	marOKRect.drawFrame(5,outColor2);
 }
 
-//.upで取れる
+
+
+void Choser::BonusFunc() {
+	_NestObj.SearchBonus();//戻り値が探索で発見したものになる
+}

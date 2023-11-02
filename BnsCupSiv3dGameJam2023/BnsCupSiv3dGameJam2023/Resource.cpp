@@ -35,3 +35,17 @@ int32 cResource::GetEnoughFood(int32 iFoodCnt) {
 	return ReturnEnoughFood;
 }
 
+void cResource::WeekEndResourceAgeUpdate() {
+	for (int32 i = 0; i < rDataArray.size(); i++) {
+		rDataArray[i].AgeUpdate();
+	}
+}
+
+int cResource::GetReserchCnt() {
+	return _ReserchCnt;
+}
+
+void cResource::UpdateReserchCnt() {
+	_ReserchCnt = GetResourceParentCnt();
+}
+

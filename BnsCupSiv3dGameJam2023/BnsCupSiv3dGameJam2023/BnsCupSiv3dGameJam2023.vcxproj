@@ -119,6 +119,7 @@
     <ClCompile Include="Army.cpp" />
     <ClCompile Include="Choser.cpp" />
     <ClCompile Include="debugMgr.cpp" />
+    <ClCompile Include="DrawWindow.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="food.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -326,6 +327,7 @@
     <ClInclude Include="Army.h" />
     <ClInclude Include="Choser.h" />
     <ClInclude Include="debugMgr.h" />
+    <ClInclude Include="DrawWindow.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="food.h" />
     <ClInclude Include="stdafx.h" />

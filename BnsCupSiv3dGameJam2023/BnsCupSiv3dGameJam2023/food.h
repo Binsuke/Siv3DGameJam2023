@@ -2,13 +2,14 @@
 class food
 {
 private:
-	int32 _Count = 0;
+	enum Param {
+		StartFood = 10,
+		AddFoodCount = 3,
+	};
+	int32 _Count = food::Param::StartFood;
 	int32 _NextNeedFoodPoint;
 	int32 _ClearFoodPoint;
-	enum Param {
-		AddFoodCount = 3,
-
-	};
+	
 public:
 	void SetNextFoodPoint(int iCount) {
 		_NextNeedFoodPoint = iCount;

@@ -1,4 +1,7 @@
 ﻿#pragma once
+
+#include "DrawWindow.h"
+#include "debugMgr.h"
 class AntNestBoad
 {
 public:
@@ -6,6 +9,29 @@ public:
 		BoadClear();
 	}
 	void Init();
+
+	const enum eNestBonusData {
+		NONE = 0,
+		ANT = 1,
+		FOOD = 2,
+		UnkFood = 3,
+		UnkANT = 4,
+		UnkEnemy = 5,
+
+		BONUS_FOOD_POINT = 5,//とりあえず５
+
+		PAR_NONE = 70,//８０％は何もなし
+		PAR_ANT = 2,//2%はあり
+		PAR_FOOD = 10,//10%はフード
+		PAR_UNK_FOOD = 10,//隠れたフード
+		PAR_UNK_ANT = 4,//隠れたアリ
+		PAR_UNK_ENEMY = 4,
+
+		BONUS_TYPE = 6,
+
+
+	};
+
 private:
 	const enum Param{
 		 SizeH = 90,
@@ -16,6 +42,17 @@ private:
 		 InitPosx = 4,
 		 InitPosY = 0,
 
+
+
+		 WindowX = 100,
+		 WindowY = 100,
+		 WindowW = 900,
+		 WindowH = 500,
+
+		 OKWindowW = 100,
+		 OKWindowH = 50,
+		 OKWindowX = WindowX + WindowW - OKWindowW * 2,
+		 OKWindowY = WindowY + WindowH - OKWindowH * 2,
 	};
 
 	const enum eNestData {
@@ -34,11 +71,10 @@ private:
 		cpBuild = 5,
 	};
 	//のちのちテクスチャーに変更するかも
-	
 
+	const Texture foodtex{ U"🍖"_emoji };
+	const Texture AntTex{ U"🐜"_emoji };
 
-	//const int32 NestSizeW = 9;
-	//const int32 NestSizeH = 80;
 	const enum NestSize {
 		_W = 9,
 		_H = 7,
@@ -51,20 +87,44 @@ private:
 
 	int32 NestData[NestSize::_W][NestSize::_H];
 
+	int32 NestBonusData[NestSize::_W][NestSize::_H];
+
+	Array<int32> NestBonusParPanel;
+
 	Rect NestRect[NestSize::_W][NestSize::_H];
 
 	bool InitFlg = false;
 
 	int32 HouseCnt = 0;
 
+	bool BonusDrawFlg = false;
+
+	int32 BonusInfotmpX = -1, BonusInfotmpY = -1;
+
+	String BonusInfoStr[eNestBonusData::BONUS_TYPE];
+
+	bool SearchFlg = false;
+
+	Array<int32> BonusInfoDrawPosX, BonusInfoDrawPosY;
+	bool BonusInfoDrawInitFlg = false;
+	int32 _SearchtmpX, _SearchtmpY;
+
 
 	bool isValid(int32 x,int32 y);
 
 	void InitCanOpenSet(int x, int y);
 
+	void InitBoadBonus();
+
+	void SetBoadBonus();
+
+	void BonusInfoDraw();
+
 	
 	//const Texture texture{U}
 public:
+
+
 	void Draw();
 	bool OnClicked(int x,int y);
 	bool MouseOveredChangeColor(bool OpenFlg);
@@ -75,11 +135,22 @@ public:
 	void BoadClear();
 	void BoadUpdate(int32 x,int32 y);
 
-	void BoadOpen(int x, int y);
+
+	int32 SearchBonus(int32 x,int32 y);
+
+	int32 SearchBonus();
+
+	void BoadOpen(int x, int y) {
+		NestData[x][y] = eNestData::Open;
+		BoadUpdate(x, y);
+	}
+
 
 	int32 GetHouseCnt() {
 		return HouseCnt;
 	}
+
+	DrawWindow cDrawWindow;
 
 	//void SearchCanOpenBlock();
 	//void CheckBlockState( int32 x, int32 y);

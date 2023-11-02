@@ -137,5 +137,7 @@ private:
 	void MonthStartStatusDraw();
 
 	void DrawInfoGrid(ColorF inColor,ColorF outColor,ColorF inColor2,ColorF outColor2);
+
+	void BonusFunc();
 };
 

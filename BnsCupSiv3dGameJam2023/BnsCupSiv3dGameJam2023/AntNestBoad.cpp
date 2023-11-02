@@ -17,6 +17,7 @@ void AntNestBoad::Draw()
 		};		
 	}
 
+	BonusInfoDraw();
 }
 
 
@@ -72,7 +73,26 @@ void AntNestBoad::Init() {
 
 			};
 		}
+
+		cDrawWindow.InitWindow(AntNestBoad::Param::WindowX, AntNestBoad::Param::WindowY, AntNestBoad::Param::WindowW, AntNestBoad::Param::WindowH,
+			AntNestBoad::Param::OKWindowX, AntNestBoad::Param::OKWindowY, AntNestBoad::Param::OKWindowW, AntNestBoad::Param::OKWindowH);
+
+		cDrawWindow.SetColor(ColorF(Palette::Skyblue), ColorF(Palette::Darkblue), ColorF(Palette::White), ColorF(Palette::Whitesmoke));
+
+		//ボーナスの描画用の文字列の設定
+
+		BonusInfoStr[eNestBonusData::ANT] = U"大人アリを見つけました";
+		BonusInfoStr[eNestBonusData::FOOD] = U"食料を手に入れました";
+		BonusInfoStr[eNestBonusData::UnkANT] = U"隠れていた大人アリを見つけました";
+		BonusInfoStr[eNestBonusData::UnkFood] = U"隠れいていた食料を見つけました";
+		BonusInfoStr[eNestBonusData::UnkEnemy] = U"隠れていた敵を見つけてしまいました";
+
+
 		
+
+		InitBoadBonus();
+		SetBoadBonus();
+
 		InitFlg = true;
 	}
 }
@@ -83,6 +103,9 @@ bool AntNestBoad::OnClicked(int x, int y) {
 		NestData[x][y] = eNestData::Open;
 		iColor[x][y] = iColorPicker[eNestData::cpOpen];
 		fColor[x][y] = fColorPicker[eNestData::cpOpen];
+		SearchFlg = true;
+		_SearchtmpX = x;
+		_SearchtmpY = y;
 		BoadUpdate(x, y);
 		return true;
 	}
@@ -98,6 +121,7 @@ bool AntNestBoad::BuildOnClicked(int x, int y) {
 		BoadUpdate(x, y);
 		return true;
 	}
+	return false;
 }
 
 bool AntNestBoad::MouseOveredChangeColor(bool OpenFlg) {
@@ -248,9 +272,179 @@ bool AntNestBoad::isValid(int32 x, int32 y) {
 	return false;
 }
 
-void AntNestBoad::BoadOpen(int32 x, int32 y) {
-	if (isValid(x,y) ){
-		NestData[x][y] = eNestData::Open;
-		BoadUpdate(x, y);
+//void AntNestBoad::BoadOpen(int32 x, int32 y) {
+//	if (isValid(x,y) ){
+//		NestData[x][y] = eNestData::Open;
+//		BoadUpdate(x, y);
+//	}
+//}
+
+void AntNestBoad::InitBoadBonus() {
+	int32 Size = NestSize::_W * NestSize::_H - 1;//初期位置は省く
+
+	float Pertmp[AntNestBoad::eNestBonusData::BONUS_TYPE];
+
+	Pertmp[eNestBonusData::NONE] = (float)Size * (0.01 * (float)eNestBonusData::PAR_NONE);
+	Pertmp[eNestBonusData::ANT] = (float)Size * (0.01 * (float)eNestBonusData::PAR_ANT);
+	Pertmp[eNestBonusData::FOOD] = (float)Size * (0.01 * (float)eNestBonusData::PAR_FOOD);
+
+	Pertmp[eNestBonusData::UnkANT] = (float)Size * (0.01 * (float)eNestBonusData::PAR_UNK_ANT);
+
+	Pertmp[eNestBonusData::UnkFood] = (float)Size * (0.01 * (float)eNestBonusData::PAR_UNK_FOOD);
+
+	Pertmp[eNestBonusData::UnkEnemy] = (float)Size * (0.01 * (float)eNestBonusData::PAR_UNK_ENEMY);
+
+
+	for (int i = 0; i < eNestBonusData::BONUS_TYPE; i++) {
+		if (Pertmp[i] <= 0) {//パネルが０なら補正
+			Pertmp[i] = 1;
+		}
 	}
+
+	int tmp = 0;
+	for (int i = 0; i < Pertmp[eNestBonusData::UnkEnemy]; i++) {//見えない敵から追加
+		NestBonusParPanel << eNestBonusData::UnkEnemy;
+		++tmp;
+	}
+	
+	for (int i = 0; i < Pertmp[eNestBonusData::UnkFood]; i++) {
+		NestBonusParPanel << eNestBonusData::UnkFood;
+		++tmp;
+	}
+	for (int i = 0; i < Pertmp[eNestBonusData::UnkANT]; i++) {
+		NestBonusParPanel << eNestBonusData::UnkANT;
+		++tmp;
+	}
+	for (int i = 0; i < Pertmp[eNestBonusData::FOOD]; i++) {
+		NestBonusParPanel << eNestBonusData::FOOD;
+		++tmp;
+	}
+	for (int i = 0; i < Pertmp[eNestBonusData::ANT]; i++) {
+		NestBonusParPanel << eNestBonusData::ANT;
+		++tmp;
+	}
+	for (int i = 0; i < Pertmp[eNestBonusData::NONE]; i++) {
+		NestBonusParPanel << eNestBonusData::NONE;
+		++tmp;
+	}
+
+	if (Size < tmp) {//全体のサイズとボーナスデータを用意したデータを比較してサイズより多いデータが入っていた場合
+		tmp = tmp - Size;//サイズを引いてどれだけ大きいかをだす
+		NestBonusParPanel.pop_back_N(tmp);//余分な後ろのデータを削除する
+	}
+	NestBonusParPanel.shuffle();
+}
+
+void AntNestBoad::SetBoadBonus() {
+	int tmp = 0;
+	for (int x = 0; x < NestSize::_W; x++) {
+		for (int y = 0; y < NestSize::_H; y++) {
+			if (NestData[x][y] != eNestData::Open) {
+				if (tmp < NestBonusParPanel.size()) {
+					NestBonusData[x][y] = NestBonusParPanel[tmp];
+				}
+				else {
+					NestBonusData[x][y] = eNestBonusData::NONE;
+				}
+			}
+			++tmp;
+		}
+	}
+}
+
+int32 AntNestBoad::SearchBonus(int32 x, int32 y) {
+	if (SearchFlg) {
+		if (x < NestSize::_W && y < NestSize::_H) {//範囲外をアクセスしていないか
+			if (NestBonusData[x][y] != eNestBonusData::NONE) {
+				BonusInfotmpX = x;
+				BonusInfotmpY = y;
+				BonusDrawFlg = true;
+			}
+			SearchFlg = false;
+			return NestBonusData[x][y];
+		}
+		SearchFlg = false;
+	}
+	return eNestBonusData::NONE;//異常がありそうならとりあえずNONEを返しておく
+}
+
+
+int32 AntNestBoad::SearchBonus() {
+	
+	if (SearchFlg) {
+		DebugPrint(_SearchtmpX, U"SearchX");
+		DebugPrint(_SearchtmpY, U"SearchY");
+
+		if (_SearchtmpX < NestSize::_W && _SearchtmpY < NestSize::_H) {//範囲外をアクセスしていないか
+			if (NestBonusData[_SearchtmpX][_SearchtmpY] != eNestBonusData::NONE) {
+				BonusInfotmpX = _SearchtmpX;
+				BonusInfotmpY = _SearchtmpY;
+				BonusDrawFlg = true;
+			}
+			SearchFlg = false;
+			return NestBonusData[_SearchtmpX][_SearchtmpY];
+		}
+		SearchFlg = false;
+	}
+	return eNestBonusData::NONE;//異常がありそうならとりあえずNONEを返しておく
+}
+
+
+void AntNestBoad::BonusInfoDraw() {
+	if (BonusInfotmpX >= 0 && BonusInfotmpY >= 0 && BonusDrawFlg) {
+		cDrawWindow.Draw(BonusInfoStr[NestBonusData[BonusInfotmpX][BonusInfotmpY]]);
+		//cDrawWindow.Draw(U"test");
+	}
+
+	//if (cDrawWindow.OnClicked()) {
+	//	//MouseL.clearInput();
+	//	BonusDrawFlg = false;
+	//}
+
+	int32 PosX, PosY;
+
+	if (!BonusInfoDrawInitFlg) {
+		for (int x = 0; x < NestSize::_W; x++) {
+			for (int y = 0; y < NestSize::_H; y++) {
+				PosX = AntNestBoad::Param::Pos_TopLeft_X + AntNestBoad::Param::SizeW * x;
+				PosY = AntNestBoad::Param::Pos_TopLeft_Y + AntNestBoad::Param::SizeH * y;
+
+				switch (NestBonusData[x][y]) {
+				case eNestBonusData::FOOD:
+					BonusInfoDrawPosX.push_back(PosX);
+					BonusInfoDrawPosY.push_back(PosY);
+					foodtex.scaled(0.5).drawAt(PosX, PosY);
+					break;
+				case eNestBonusData::ANT:
+					BonusInfoDrawPosX.push_back(PosX);
+					BonusInfoDrawPosY.push_back(PosY);
+					AntTex.scaled(0.5).drawAt(PosX, PosY);
+					break;
+				}
+			}
+		}
+	}
+	else {
+		for (int x = 0; x < BonusInfoDrawPosX.size(); x++) {
+			for (int y = 0; y < BonusInfoDrawPosY.size(); y++) {				
+				switch (NestBonusData[BonusInfoDrawPosX[x]][ BonusInfoDrawPosY[y]]) {
+				case eNestBonusData::FOOD:
+					PosX = AntNestBoad::Param::Pos_TopLeft_X + AntNestBoad::Param::SizeW * BonusInfoDrawPosX[x];
+					PosY = AntNestBoad::Param::Pos_TopLeft_Y + AntNestBoad::Param::SizeH * BonusInfoDrawPosY[y];
+
+					foodtex.scaled(0.5).drawAt(PosX, PosY);
+					break;
+				case eNestBonusData::ANT:
+					PosX = AntNestBoad::Param::Pos_TopLeft_X + AntNestBoad::Param::SizeW * BonusInfoDrawPosX[x];
+					PosY = AntNestBoad::Param::Pos_TopLeft_Y + AntNestBoad::Param::SizeH * BonusInfoDrawPosY[y];
+
+					AntTex.scaled(0.5).drawAt(PosX, PosY);
+					break;
+
+				}
+			}
+		}
+	}
+
+	//cDrawWindow.Draw()
 }

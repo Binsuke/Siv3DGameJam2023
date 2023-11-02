@@ -23,6 +23,7 @@ class cResource
 {
 	int32 _Count=0;
 	int32 _ChildCount = 0;
+	int32 _ReserchCnt = 0;
 private:
 	Array<ResourceData> rDataArray;
 	
@@ -36,6 +37,7 @@ public:
 	void UseResource() {
 		rDataArray.pop_front_N(1);
 		--_Count;
+		--_ReserchCnt;
 	}
 
 	int32 GetNeedFood();
@@ -77,6 +79,15 @@ public:
 	}
 
 	int32 GetEnoughFood(int32 iFoodCnt);
-		
+
+	void WeekEndResourceAgeUpdate();
+
+	void UpdateReserchCnt();
+
+	int32 GetReserchCnt();
+
+	void UseReserch() {
+		--_ReserchCnt;
+	}
 };
 
