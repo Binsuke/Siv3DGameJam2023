@@ -13,6 +13,8 @@ private:
 public:
 	void InitWindow(int32 iX,int32 iY,int32 iW, int32 iH,int32 iOKX,int32 iOKY,int32 iOKW,int32 iOKH);
 
+	void InitWindow(int32 iX, int32 iY, int32 iW, int32 iH);
+
 	void SetColor(Color iWindowInColor, Color iWindowOutColor, Color iOKWindowInColor, Color iOKWindowOutColor) {
 		_WindowInColor = iWindowInColor;
 		_WindowOutColor = iWindowOutColor;
@@ -20,8 +22,19 @@ public:
 		_OKWindowOutColor = iOKWindowOutColor;
 	}
 
+	void SetColor(Color iWindowInColor, Color iWindowOutColor) {
+		_WindowInColor = iWindowInColor;
+		_WindowOutColor = iWindowOutColor;
+	}
+
 	bool OnClicked();
 
 	void Draw( String str);
+
+	void DrawWindowOnly(String str);
+
+	void DrawWindowOnly(String str, int32 StrSize);
+
+	void DrawWindowOnly(String str, int32 StrSize, int32 offsetX, int32 offsetY);
 };
 

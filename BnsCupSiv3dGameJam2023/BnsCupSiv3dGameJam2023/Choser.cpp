@@ -75,6 +75,12 @@ void Choser::Draw()
 	InfoDraw();
 	MonthActionResultDraw();
 	MonthStartStatusDraw();
+
+	gfbDrawInfo();
+	nobDrawInfo();
+	grbDrawInfo();
+
+	DebugPrint(orpGFBFlg, U"GFBFlg");
 }
 
 
@@ -126,6 +132,8 @@ void Choser::Init() {
 	_FoodObj.SetNextFoodPoint(Choser::Param::DefaultFoodWeight);
 
 	MonthStartStatusSet();//月初めのステータスの設定
+
+	BottunInitWindow();//インフォメーション描画用のレクタングル初期化
 
 	InitFlg = true;
 }
@@ -209,6 +217,7 @@ void Choser::TurnAdm() {
 	bool WeekEndflg = false;
 	if (TurnActionCount == 0) {//週の終わり
 		++WeekCnt;
+		UpdateTrunAction();
 		TurnActionCount = WeekTurnMax;
 		WeekEndflg = true;//ここでアップデートしてしまうと月末の処理があまりよろしくないので下に移す
 		}
@@ -239,6 +248,7 @@ void Choser::TurnAdm() {
 }
 
 void Choser::Run() {
+	BottunOverrideMgr();
 	OnClicked();
 	BonusFunc();
 	TurnAdm();
@@ -504,15 +514,85 @@ void Choser::BonusFunc() {
 		break;
 	case AntNestBoad::eNestBonusData::ANT://アリの仕様はリソースクラスに追加するので後回し
 		_ResourceObj.GetSeachBonus();
+		++TurnActionCount;
 		break;
 	case AntNestBoad::eNestBonusData::UnkFood:
 		_FoodObj.AddFood(Choser::Bonus::BonusFoodPoint);
 		break;
 	case AntNestBoad::eNestBonusData::UnkANT://上記と同じ
 		_ResourceObj.GetSeachBonus();
+		++TurnActionCount;
 		break;
 	case AntNestBoad::eNestBonusData::UnkEnemy://とりあえず隠れている敵を見つけたときは敵を１増やす
 		_EnemyObj.AddEnemy(1);
 		break;
 	}
+}
+void Choser::BottunInitWindow() {
+	BottunInfoWindow.InitWindow(BottunInfoX, BottunInfoY, BottunInfoW, BottunInfoH);
+	BottunInfoWindow.SetColor(ColorF(Palette::Black), ColorF(Palette::Aliceblue));
+}
+
+void Choser::BottunOverrideMgr() {
+	if (nobCircle.mouseOver()) {
+		orpNestOpenFlg = true;
+		//DebugPrint(orpNestOpenFlg, U"debug");
+	}
+	else {
+		orpNestOpenFlg = false;
+	}
+
+	if (gfbCircle.mouseOver()) {
+		orpGFBFlg = true;
+	}
+	else {
+		orpGFBFlg = false;
+	}
+
+	if (grbCircle.mouseOver()) {
+		orpGRBFlg = true;
+	}
+	else {
+		orpGRBFlg = false;
+	}
+
+	if (bbCircle.mouseOver()) {
+		orpBBFlg = true;
+	}
+	else {
+		orpBBFlg = false;
+	}
+
+	if (atCircle.mouseOver()) {
+		orpAtFlg = true;
+	}
+	else {
+		orpAtFlg = false;
+	}
+
+	//DebugPrint(orpGFBFlg, U"debug");
+
+}
+
+void Choser::gfbDrawInfo() {
+	if (orpGFBFlg) {
+		BottunInfoWindow.DrawWindowOnly(U"食料探索ボタン、１度に{}個食料を手に入れる\nあと{}回探索ができる"_fmt(_FoodObj.GetAddFoodCnt(), _ResourceObj.GetReserchCnt()),20,10,10);
+	}
+}
+
+void Choser::nobDrawInfo() {
+	if (orpNestOpenFlg) {
+		BottunInfoWindow.DrawWindowOnly(U"巣穴を掘るボタン\n巣穴の周りを選んで巣穴を拡張しよう",20,10,10);
+	}
+}
+
+void Choser::grbDrawInfo() {
+	if (orpGRBFlg) {
+		
+		BottunInfoWindow.DrawWindowOnly(U"子供を産むボタン 家があると赤ちゃんを産むことができる 赤ちゃんは大人の半分の食料を消費して４週間で大人になる\n現在の家の数は{} 全体のアリの総数は{} 空き部屋の数は{}"_fmt(_NestObj.GetHouseCnt(), _ResourceObj.GetResouceCnt() + _ArmyObj.GetArmyCnt(), _NestObj.GetHouseCnt() - _ResourceObj.GetResouceCnt() - _ArmyObj.GetArmyCnt()),20,10,10);
+	}
+}
+
+void Choser::UpdateTrunAction() {
+	WeekTurnMax = Choser::Param::InitTurnActionCnt + _ResourceObj.GetResourceParentCnt();
 }

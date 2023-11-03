@@ -3,8 +3,8 @@ class food
 {
 private:
 	enum Param {
-		StartFood = 10,
-		AddFoodCount = 3,
+		StartFood = 4,
+		AddFoodCount = 2,
 	};
 	int32 _Count = food::Param::StartFood;
 	int32 _NextNeedFoodPoint;
@@ -40,7 +40,9 @@ public:
 
 	void SearchFood();
 
-
+	int32 GetAddFoodCnt() {
+		return food::Param::AddFoodCount;
+	}
 
 	int32 GetFoodCnt() {
 		return _Count;

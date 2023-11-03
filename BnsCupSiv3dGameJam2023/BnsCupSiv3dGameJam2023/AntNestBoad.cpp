@@ -84,11 +84,15 @@ void AntNestBoad::Init() {
 		BonusInfoStr[eNestBonusData::ANT] = U"大人アリを見つけました";
 		BonusInfoStr[eNestBonusData::FOOD] = U"食料を手に入れました";
 		BonusInfoStr[eNestBonusData::UnkANT] = U"隠れていた大人アリを見つけました";
-		BonusInfoStr[eNestBonusData::UnkFood] = U"隠れいていた食料を見つけました";
+		BonusInfoStr[eNestBonusData::UnkFood] = U"隠れていた食料を見つけました";
 		BonusInfoStr[eNestBonusData::UnkEnemy] = U"隠れていた敵を見つけてしまいました";
 
 
-		
+		for (int x = 0; x < AntNestBoad::NestSize::_W; x++) {
+			for (int y = 0; y < AntNestBoad::NestSize::_H; y++) {
+				NestBonusData[x][y] = AntNestBoad::eNestBonusData::NONE;
+			}
+		}
 
 		InitBoadBonus();
 		SetBoadBonus();
@@ -280,7 +284,7 @@ bool AntNestBoad::isValid(int32 x, int32 y) {
 //}
 
 void AntNestBoad::InitBoadBonus() {
-	int32 Size = NestSize::_W * NestSize::_H - 1;//初期位置は省く
+	int32 Size = NestSize::_W * NestSize::_H ;//初期位置は省く
 
 	float Pertmp[AntNestBoad::eNestBonusData::BONUS_TYPE];
 
@@ -372,8 +376,8 @@ int32 AntNestBoad::SearchBonus(int32 x, int32 y) {
 int32 AntNestBoad::SearchBonus() {
 	
 	if (SearchFlg) {
-		DebugPrint(_SearchtmpX, U"SearchX");
-		DebugPrint(_SearchtmpY, U"SearchY");
+		//DebugPrint(_SearchtmpX, U"SearchX");
+		//DebugPrint(_SearchtmpY, U"SearchY");
 
 		if (_SearchtmpX < NestSize::_W && _SearchtmpY < NestSize::_H) {//範囲外をアクセスしていないか
 			if (NestBonusData[_SearchtmpX][_SearchtmpY] != eNestBonusData::NONE) {
@@ -383,7 +387,6 @@ int32 AntNestBoad::SearchBonus() {
 			}
 			SearchFlg = false;
 			int32 returntmp = NestBonusData[_SearchtmpX][_SearchtmpY];
-			//NestBonusData[_SearchtmpX][_SearchtmpY] = eNestBonusData::NONE;
 			return returntmp;
 		}
 		SearchFlg = false;
@@ -407,32 +410,33 @@ void AntNestBoad::BonusInfoDraw() {
 
 				switch (NestBonusData[x][y]) {
 				case eNestBonusData::FOOD:
-					BonusInfoDrawPosX.push_back(PosX);
-					BonusInfoDrawPosY.push_back(PosY);
+					BonusInfoDrawPosX.push_back(x);
+					BonusInfoDrawPosY.push_back(y);
 					foodtex.scaled(0.5).drawAt(PosX, PosY);
 					break;
 				case eNestBonusData::ANT:
-					BonusInfoDrawPosX.push_back(PosX);
-					BonusInfoDrawPosY.push_back(PosY);
+					BonusInfoDrawPosX.push_back(x);
+					BonusInfoDrawPosY.push_back(y);
 					AntTex.scaled(0.5).drawAt(PosX, PosY);
 					break;
 				}
 			}
 		}
+		BonusInfoDrawInitFlg = true;
 	}
 	else {
 		for (int x = 0; x < BonusInfoDrawPosX.size(); x++) {
 			for (int y = 0; y < BonusInfoDrawPosY.size(); y++) {				
 				switch (NestBonusData[BonusInfoDrawPosX[x]][ BonusInfoDrawPosY[y]]) {
 				case eNestBonusData::FOOD:
-					PosX = AntNestBoad::Param::Pos_TopLeft_X + AntNestBoad::Param::SizeW * BonusInfoDrawPosX[x];
-					PosY = AntNestBoad::Param::Pos_TopLeft_Y + AntNestBoad::Param::SizeH * BonusInfoDrawPosY[y];
+					PosX = AntNestBoad::Param::Pos_TopLeft_X + (AntNestBoad::Param::SizeW + 10) * BonusInfoDrawPosX[x] + AntNestBoad::SizeW/2;
+					PosY = AntNestBoad::Param::Pos_TopLeft_Y + (AntNestBoad::Param::SizeH + 10)* BonusInfoDrawPosY[y] + AntNestBoad::SizeH/2;
 
 					foodtex.scaled(0.5).drawAt(PosX, PosY);
 					break;
 				case eNestBonusData::ANT:
-					PosX = AntNestBoad::Param::Pos_TopLeft_X + AntNestBoad::Param::SizeW * BonusInfoDrawPosX[x];
-					PosY = AntNestBoad::Param::Pos_TopLeft_Y + AntNestBoad::Param::SizeH * BonusInfoDrawPosY[y];
+					PosX = AntNestBoad::Param::Pos_TopLeft_X + (AntNestBoad::Param::SizeW + 10) * BonusInfoDrawPosX[x] + AntNestBoad::SizeW/2;
+					PosY = AntNestBoad::Param::Pos_TopLeft_Y + (AntNestBoad::Param::SizeH +10)* BonusInfoDrawPosY[y]+ AntNestBoad::SizeH/2;
 
 					AntTex.scaled(0.5).drawAt(PosX, PosY);
 					break;

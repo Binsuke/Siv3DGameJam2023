@@ -5,6 +5,7 @@
 #include "Army.h"
 #include "AntNestBoad.h"
 #include "Enemy.h"
+#include "DrawWindow.h"
 
 class Choser
 {
@@ -57,6 +58,12 @@ private:
 		marOKX = marX + marW - marOKW * 2,
 		marOKY = marY + marH - marOKH * 2,
 
+		BottunInfoX = 100,
+		BottunInfoY = 50,
+
+		BottunInfoW = 1100,
+		BottunInfoH = 80,
+
 	};
 
 	const enum Bonus {
@@ -101,6 +108,7 @@ private:
 	AntNestBoad _NestObj;
 	Enemy _EnemyObj;
 
+	bool orpNestOpenFlg = false, orpGFBFlg = false, orpGRBFlg = false, orpAtFlg = false, orpBBFlg = false;
 
 	//ネストオープンボタンのアクティブと非アクティブの色変化
 	Color NestOpenButtonColor[2];
@@ -125,6 +133,9 @@ private:
 	Rect marRect;
 	Rect marOKRect;
 
+	//ボタンのインフォーメーション用
+	DrawWindow BottunInfoWindow;
+
 	//Function
 	void OnClicked();
 	void TurnAdm();
@@ -148,5 +159,14 @@ private:
 	void DrawInfoGrid(ColorF inColor,ColorF outColor,ColorF inColor2,ColorF outColor2);
 
 	void BonusFunc();
+
+	void BottunInitWindow();
+
+	void BottunOverrideMgr();
+
+	void gfbDrawInfo();
+	void nobDrawInfo();
+	void grbDrawInfo();
+	void UpdateTrunAction();
 };
 

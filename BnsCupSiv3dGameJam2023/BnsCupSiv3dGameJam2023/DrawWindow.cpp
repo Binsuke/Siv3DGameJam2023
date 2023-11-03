@@ -15,6 +15,13 @@ void DrawWindow::InitWindow(int32 iX, int32 iY, int32 iW, int32 iH,int32 iOKX,in
 	_RectOKWindow = Rect(_OKX, _OKY, _OKW, _OKH);
 }
 
+void DrawWindow::InitWindow(int32 iX, int32 iY, int32 iW, int32 iH) {
+	_X = iX;
+	_Y = iY;
+	_W = iW;
+	_H = iH;
+	_RectWindow = Rect(_X, _Y, _W, _H);
+}
 
 void DrawWindow::Draw( String str) {
 	_RectWindow.draw(_WindowInColor);
@@ -27,6 +34,30 @@ void DrawWindow::Draw( String str) {
 	font(U"{}"_fmt(str)).draw(50, _X + 30, _Y + 100);
 
 	DrawFlg = true;
+}
+
+
+void DrawWindow::DrawWindowOnly(String str) {
+	_RectWindow.draw(_WindowInColor);
+	_RectWindow.drawFrame(5, _WindowOutColor);
+
+	font(U"{}"_fmt(str)).draw(50, _X + 30, _Y + 100);
+}
+
+
+void DrawWindow::DrawWindowOnly(String str,int32 StrSize) {
+	_RectWindow.draw(_WindowInColor);
+	_RectWindow.drawFrame(5, _WindowOutColor);
+
+	font(U"{}"_fmt(str)).draw(StrSize, _X + 30, _Y + 100);
+}
+
+
+void DrawWindow::DrawWindowOnly(String str, int32 StrSize,int32 offsetX,int32 offsetY) {
+	_RectWindow.draw(_WindowInColor);
+	_RectWindow.drawFrame(5, _WindowOutColor);
+
+	font(U"{}"_fmt(str)).draw(StrSize, _X + offsetX, _Y + offsetY);
 }
 
 
