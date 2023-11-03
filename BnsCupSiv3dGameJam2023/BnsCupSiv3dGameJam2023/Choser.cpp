@@ -7,7 +7,7 @@
 void Choser::NestOpenButton() {
 	if (InitFlg) {
 		int32 tmp = 0;
-		if (NestOpenFlg) {
+		if (NestOpenFlg && !NestBuildFlg) {
 			tmp = Choser::Param:: _true;
 		}
 		else {
@@ -15,6 +15,7 @@ void Choser::NestOpenButton() {
 		}
 		nobCircle.draw(NestOpenButtonColor[tmp]);
 		nobCircle.drawFrame(2, ColorF(0.1));
+		HoruTex.scaled(0.3).drawAt(Choser::Param::NestOpenButtonX + Choser::Param::nobSize/2, Choser::Param::NestOpenButtonY + Choser::Param::nobSize / 2 );
 	}
 }
 
@@ -23,6 +24,8 @@ void Choser::GetFoodButton() {
 	if (InitFlg) {
 		gfbCircle.draw(ColorF(0.5, 0.7, 1.0));
 		gfbCircle.drawFrame(2, ColorF(0.1));
+		FoodSeachTex.scaled(0.4).drawAt(Choser::Param::gfbX + Choser::Param::gfbSize / 2, Choser::Param::gfbY + Choser::Param::gfbSize/2 - 15);
+
 	}
 }
 
@@ -31,6 +34,8 @@ void Choser::GetResourceButton() {
 	if (InitFlg) {
 		grbCircle.draw(ColorF(0.7, 0.7, 1.0));
 		grbCircle.drawFrame(2, ColorF(0.1));
+		//EggTex.scaled(0.3).drawAt(Choser::Param::grbX + Choser::Param::grbSize / 2, Choser::Param::grbY + Choser::Param::grbSize);
+		QueenTex.scaled(0.35).drawAt(Choser::Param::grbX + Choser::Param::grbSize / 2, Choser::Param::grbY + Choser::Param::grbSize / 2);
 	}
 }
 
@@ -38,7 +43,7 @@ void Choser::GetResourceButton() {
 void Choser::BuildButton() {
 	if (InitFlg) {
 		int32 tmp = 0;
-		if (NestBuildFlg) {
+		if (NestBuildFlg && !NestOpenFlg) {
 			tmp = Choser::Param::_true;
 		}
 		else {
@@ -46,7 +51,7 @@ void Choser::BuildButton() {
 		}
 		bbCircle.draw(NestBuildButtonColor[tmp]);
 		bbCircle.drawFrame(2, ColorF(0.1));
-
+		BuildTex.scaled(0.4).drawAt(Choser::Param::bbX + Choser::Param::bbSize / 2, Choser::Param::bbY + Choser::Param::bbSize / 2);
 		//DebugPrint(NestBuildButtonColor[tmp], U"ビルドボタンカラー");
 	}
 }
@@ -55,6 +60,7 @@ void Choser::ArmyTraning() {
 	if (InitFlg) {
 		atCircle.draw(ColorF(1.0, 0.1, 0.1));
 		atCircle.drawFrame(2, ColorF(0.1));
+		ArmyTraningTex.scaled(0.4).drawAt(Choser::Param::atX + Choser::Param::atSize / 2,Choser::Param::atY + Choser::Param::atSize / 2 - 10);
 	}
 }
 
@@ -156,9 +162,9 @@ void Choser::OnClicked() {
 			}
 		}
 		//ネストオープンサークルクリック
-		if (nobCircle.leftClicked()) {
+		if (nobCircle.leftClicked() && !NestBuildFlg) {
 			
-			switch(NestOpenFlg) {
+			switch(NestOpenFlg ) {
 				case false:
 					NestOpenFlg = true;
 					break;
@@ -175,7 +181,7 @@ void Choser::OnClicked() {
 			NestOpenFlg = false;
 		}
 
-		if (bbCircle.leftClicked()) {
+		if (bbCircle.leftClicked() && !NestOpenFlg) {
 			switch (NestBuildFlg) {
 			case false:
 				NestBuildFlg = true;
@@ -243,16 +249,18 @@ void Choser::InfoDraw() {
 	
 
 
-	foodtex.scaled(0.5).drawAt(1030, 300);
+	foodtex.scaled(0.25).drawAt(1030, 300);
 	font(U"{}"_fmt(_FoodObj.GetFoodCnt())).draw(50, 1065, 275);
 
-	AntTex.scaled(0.5).drawAt(1030, 375);
-	font(U"子供:{}\n大人:{}"_fmt(_ResourceObj.GetResourceChildrenCnt(),_ResourceObj.GetResourceParentCnt())).draw(50, 1065, 350);
+	AntTex.scaled(0.3).drawAt(1020, 375);
+	font(U"大人:{}"_fmt(_ResourceObj.GetResourceParentCnt())).draw(50, 1065, 350);
+	BabyTex.scaled(0.4).drawAt(1030, 420);
+	font(U"子供:{}"_fmt(_ResourceObj.GetResourceChildrenCnt())).draw(50, 1065, 425);
 
-	ArmyTex.scaled(0.5).drawAt(1030,525);
+	ArmyTex.scaled(0.25).drawAt(1030,525);
 	font(U"{}"_fmt(_ArmyObj.GetArmyCnt())).draw(50, 1065, 500);
 
-	HouseTex.scaled(0.5).drawAt(1030, 600);
+	HouseTex.scaled(0.4).drawAt(1030, 610);
 	font(U"{}"_fmt(_NestObj.GetHouseCnt())).draw(50, 1065, 575);
 
 

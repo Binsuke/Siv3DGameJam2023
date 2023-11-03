@@ -62,14 +62,20 @@ private:
 	const enum Bonus {
 		BonusFoodPoint = 3,
 	};
-	const Texture foodtex{ U"🍖"_emoji };
-	const Texture AntTex{ U"🐜"_emoji };
-	const Texture ArmyTex{ U"💂"_emoji };
+	const Texture foodtex{ U"texture/food.png" };//{ U"🍖"_emoji };
+	const Texture AntTex{ U"texture/research.png" };//{ U"🐜"_emoji };
+	const Texture BabyTex{ U"texture/baby.png" };
+	const Texture ArmyTex{ U"texture/Army.png" };//{ U"💂"_emoji };
 	const Texture HouseTex{ U"🏠"_emoji };
 	const Texture NextFoodTex{ U"🍴"_emoji };
 	const Texture NextEnemyTex{ U"☠"_emoji };
 
-
+	const Texture FoodSeachTex{ U"texture/research.png" };
+	const Texture HoruTex{ U"texture/horu.png" };
+	const Texture BuildTex{ U"texture/build.png" };
+	const Texture EggTex{ U"texture/egg.png" };
+	const Texture ArmyTraningTex{ U"texture/Army.png" };
+	const Texture QueenTex{ U"texture/Queen.png" };
 	//Rect NextMonthRectIn;
 	//Rect NextMonthRectOut;
 	const Font font{ FontMethod::MSDF,48 };

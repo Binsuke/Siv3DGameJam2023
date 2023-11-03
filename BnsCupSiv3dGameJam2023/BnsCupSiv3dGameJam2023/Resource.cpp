@@ -51,6 +51,7 @@ void cResource::UpdateReserchCnt() {
 
 void cResource::GetSeachBonus() {
 	++_Count;
+	++_ReserchCnt;
 	ResourceData tmpdata;
 	tmpdata.AgeUpdate(4);
 	rDataArray.push_front(tmpdata);
