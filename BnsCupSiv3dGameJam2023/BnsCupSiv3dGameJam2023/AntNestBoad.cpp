@@ -20,11 +20,39 @@ void AntNestBoad::Draw()
 	BonusInfoDraw();
 }
 
-
+void AntNestBoad::End() {
+	InitFlg = false;
+}
 void AntNestBoad::Init() {
 	if (!InitFlg) {
 		int32 PosX, PosY, SizeW, SizeH;
+		BonusInfoDrawPosX.pop_back_N(BonusInfoDrawPosX.size());
+		BonusInfoDrawPosY.pop_back_N(BonusInfoDrawPosY.size());
 
+		NestBonusParPanel.pop_back_N(NestBonusParPanel.size());
+		for (int x = 0; x < NestSize::_W; x++) {
+			for (int y = 0; y < NestSize::_H; y++) {
+				NestData[x][y] = 0;
+				NestBonusData[x][y] = 0;
+			}
+		}
+
+
+		HouseCnt = 0;
+
+		BonusDrawFlg = false;
+
+		BonusInfotmpX = -1;
+		BonusInfotmpY = -1;
+
+		SearchFlg = false;
+
+		BonusInfoDrawInitFlg = false;
+
+		_SearchtmpX = 0;
+		_SearchtmpY = 0;
+
+		_OpenCnt = 0;
 		//各カラー設定 iColorPickerがインナーカラー
 		//             fColorPiuckerがフレイムカラー
 		iColorPicker[eNestData::cpClose] = ColorF(0.1);
@@ -94,9 +122,13 @@ void AntNestBoad::Init() {
 			}
 		}
 
+		
+
 		InitBoadBonus();
 		SetBoadBonus();
 
+
+		
 		InitFlg = true;
 	}
 }

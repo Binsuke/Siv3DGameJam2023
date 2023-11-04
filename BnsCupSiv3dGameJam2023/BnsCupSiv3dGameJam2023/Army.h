@@ -7,7 +7,17 @@ private:
 	const enum Param {
 		TraningCnt = 1,
 	};
+	bool InitFlg = false;
 public:
+	void Init() {
+		if (!InitFlg) {
+			_Count = 0;
+			_NeedFood = 2;
+		}
+	}
+	void End() {
+		InitFlg = false;
+	}
 	void ArmyTraningOnClicked() {
 		_Count += Param::TraningCnt;
 

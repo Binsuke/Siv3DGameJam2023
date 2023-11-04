@@ -162,6 +162,8 @@ public:
 	}
 	DrawWindow cDrawWindow;
 
+	void End();
+
 	//void SearchCanOpenBlock();
 	//void CheckBlockState( int32 x, int32 y);
 };

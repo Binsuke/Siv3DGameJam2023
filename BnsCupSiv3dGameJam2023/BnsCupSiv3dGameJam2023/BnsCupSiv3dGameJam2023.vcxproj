@@ -122,6 +122,7 @@
     <ClCompile Include="DrawWindow.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="food.cpp" />
+    <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Sccene.cpp" />
     <ClCompile Include="SceneInterface.cpp" />
@@ -333,6 +334,7 @@
     <ClInclude Include="DrawWindow.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="food.h" />
+    <ClInclude Include="GameClear.h" />
     <ClInclude Include="Sccene.h" />
     <ClInclude Include="SceneInterface.h" />
     <ClInclude Include="stdafx.h" />
