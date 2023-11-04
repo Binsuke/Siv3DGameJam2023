@@ -27,13 +27,16 @@ public:
 
 class cResource
 {
+private:
 	int32 _Count=0;
 	int32 _ChildCount = 0;
 	int32 _ReserchCnt = 0;//食料探索を行える大人アリのカウント
-private:
+
 	Array<ResourceData> rDataArray;
 	
 public:
+
+	void Init();
 	void SearchResource();
 
 	int32 GetResouceCnt() {

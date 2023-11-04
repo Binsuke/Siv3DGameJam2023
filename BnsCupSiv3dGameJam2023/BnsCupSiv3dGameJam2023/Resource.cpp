@@ -1,6 +1,13 @@
 ﻿#include "stdafx.h"
 #include "Resource.h"
 
+void cResource::Init() {
+	_Count = 0;
+	_ChildCount = 0;
+	_ReserchCnt = 0;
+
+	rDataArray.pop_back_N(rDataArray.size());
+}
 
 void cResource::SearchResource() {
 	++_Count;

@@ -11,6 +11,10 @@ private:
 	int32 _ClearFoodPoint;
 	
 public:
+
+	void Init() {
+		_Count = food::Param::StartFood;
+	}
 	void SetNextFoodPoint(int iCount) {
 		_NextNeedFoodPoint = iCount;
 	}

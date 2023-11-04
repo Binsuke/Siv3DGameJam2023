@@ -78,12 +78,17 @@ void Choser::Draw()
 
 	_NestObj.BonusInfoPopupDraw();
 
+
+	_GameClearObj.Draw();
 	gfbDrawInfo();
 	nobDrawInfo();
 	grbDrawInfo();
 	bbDrawInfo();
 	atDrawInfo();
-	DebugPrint(orpGFBFlg, U"GFBFlg");
+
+
+
+	//DebugPrint(orpGFBFlg, U"GFBFlg");
 }
 
 
@@ -138,6 +143,24 @@ void Choser::Init() {
 
 	BottunInitWindow();//インフォメーション描画用のレクタングル初期化
 
+	_GameClearObj.Init();
+
+	_ArmyObj.Init();
+
+	_FoodObj.Init();
+
+	_ResourceObj.Init();
+
+	WeekCnt = 0;
+	MonthCnt = 0;
+	TurnActionCount = Param::InitTurnActionCnt;
+
+	MonthResultFlg = false;
+
+	MonthActionFlg = false;
+
+	MonthStartFlg = false;
+
 	InitFlg = true;
 }
 
@@ -146,7 +169,7 @@ void Choser::OnClicked() {
 
 	ClearPrint();
 	//行動権が残っていたら
-	if (TurnActionCount > 0) {
+	if (TurnActionCount > 0 && MonthStartFlg == false) {
 		//食べ物の調達ボタンクリック
 		if (gfbCircle.leftClicked()) {
 			if (_ResourceObj.GetReserchCnt() > 0) {
@@ -216,7 +239,7 @@ void Choser::OnClicked() {
 }
 
 
-void Choser::TurnAdm() {
+int32 Choser::TurnAdm() {
 	bool WeekEndflg = false;
 	if (TurnActionCount == 0) {//週の終わり
 		++WeekCnt;
@@ -227,7 +250,9 @@ void Choser::TurnAdm() {
 		if (MonthActionFlg == false) {
 			MonthActionFlg = true;
 			MonthAction();
+			++MonthCnt;
 			MonthStartStatusSet();
+			
 			//DebugPrint(MonthActionFlg, U"WeekActionFlg");
 
 		}
@@ -237,7 +262,7 @@ void Choser::TurnAdm() {
 		if (MonthActionFlg == true) {
 			MonthActionFlg = false;
 		}
-		DebugPrint(MonthActionFlg, U"WeekActionFlg");
+		//DebugPrint(MonthActionFlg, U"WeekActionFlg");
 	}
 
 	if (WeekEndflg) {
@@ -248,15 +273,28 @@ void Choser::TurnAdm() {
 
 
 	}
+	_GameClearObj.UpdateClearPoint(_ResourceObj.GetResourceParentCnt(),_ResourceObj.GetResourceChildrenCnt(),_ArmyObj.GetArmyCnt());
 
+	if (MonthCnt >= Choser::Param::EndMonth) {
+		_GameClearObj.GameEnd(_FoodObj.GetFoodCnt());
+	}
+	int32 tmp = _GameClearObj.ReturnToTitle();
+	if (tmp != 3) {
+		//各種オブジェクトのendを呼び出す
+		_NestObj.End();
+		_ArmyObj.End();
+
+		InitFlg = false;
+	}
+	return tmp;
 }
 
 int32 Choser::Run() {
 	BottunOverrideMgr();
 	OnClicked();
 	BonusFunc();
-	TurnAdm();
-	return 3;
+	int32 tmp = TurnAdm();
+	return tmp;
 }
 
 
@@ -279,7 +317,7 @@ void Choser::InfoDraw() {
 	font(U"{}"_fmt(_NestObj.GetHouseCnt())).draw(50, 1065, 575);
 
 
-	font(U"{}月{}週目:残り手番{}回"_fmt((WeekCnt / 4)+1, (WeekCnt % 4)+1, TurnActionCount)).draw(50, 50, 10);
+	font(U"{}月{}週目:残り手番{}回"_fmt((WeekCnt / 4)+ Choser::Param::StartMonth, (WeekCnt % 4)+1, TurnActionCount)).draw(30, 50, 10);
 
 
 
@@ -474,14 +512,19 @@ void Choser::MonthStartStatusSet() {//月の初めの様々なステータスを
 
 	int Randomtmp;//0~5の値を入手
 
-	if (WeekCnt <= 12) {//３か月までは
-		Randomtmp = Random(100) % 3;//最大2の値
+	//if (WeekCnt <= 12) {//３か月までは
+	//	Randomtmp = Random(100) % 3;//最大2の値
+	//}
+	//else {
+	//	Randomtmp = Random(100) % 8;//仮
+	//}
+	int tmp = MonthCnt;
+	if (tmp <= 1) {
+		tmp = 1;
 	}
-	else {
-		Randomtmp = Random(100) % 8;//仮
-	}
+	Randomtmp = Random(100) % (tmp * tmp);
 
-	_EnemyObj.SetNextEnemyCount(Randomtmp);
+	_EnemyObj.SetNextEnemyCount(Randomtmp + MonthCnt);
 
 	MonthStartFlg = true;
 }

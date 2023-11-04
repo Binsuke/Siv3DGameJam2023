@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "DrawWindow.h"
 #include "SceneInterface.h"
+#include "GameClear.h"
 //#include "Sccene.h"
 class Choser : public SceneInterface
 {
@@ -65,6 +66,8 @@ private:
 		BottunInfoW = 1100,
 		BottunInfoH = 80,
 
+		StartMonth = 6,
+		EndMonth = 5,
 	};
 
 	const enum Bonus {
@@ -91,6 +94,7 @@ private:
 	
 	int32 WeekCnt = 0;//何週間目かの確認用
 	int32 WeekTurnMax;//１週間にできる手番の数
+	int32 MonthCnt = 0;
 
 	int32 TurnActionCount = Param::InitTurnActionCnt;
 
@@ -108,6 +112,8 @@ private:
 	Army _ArmyObj;
 	AntNestBoad _NestObj;
 	Enemy _EnemyObj;
+
+	GameClear _GameClearObj;
 
 	bool orpNestOpenFlg = false, orpGFBFlg = false, orpGRBFlg = false, orpAtFlg = false, orpBBFlg = false;
 
@@ -139,7 +145,7 @@ private:
 
 	//Function
 	void OnClicked();
-	void TurnAdm();
+	int32 TurnAdm();
 
 	void InfoDraw();
 	void NestOpenButton();
