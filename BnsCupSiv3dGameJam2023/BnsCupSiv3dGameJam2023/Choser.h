@@ -6,18 +6,19 @@
 #include "AntNestBoad.h"
 #include "Enemy.h"
 #include "DrawWindow.h"
-
-class Choser
+#include "SceneInterface.h"
+//#include "Sccene.h"
+class Choser : public SceneInterface
 {
 public:
 	
 
-	void Init();
+	void Init() override;
 
-	void Draw();
+	void Draw() override;
 
 
-	void Run();
+	int32 Run() override;
 
 private:
 	const enum Param {
@@ -70,7 +71,7 @@ private:
 		BonusFoodPoint = 3,
 	};
 	const Texture foodtex{ U"texture/food.png" };//{ U"🍖"_emoji };
-	const Texture AntTex{ U"texture/research.png" };//{ U"🐜"_emoji };
+	const Texture AntTex{ U"texture/ant.png" };//{ U"🐜"_emoji };
 	const Texture BabyTex{ U"texture/baby.png" };
 	const Texture ArmyTex{ U"texture/Army.png" };//{ U"💂"_emoji };
 	const Texture HouseTex{ U"🏠"_emoji };
@@ -167,6 +168,8 @@ private:
 	void gfbDrawInfo();
 	void nobDrawInfo();
 	void grbDrawInfo();
+	void bbDrawInfo();
+	void atDrawInfo();
 	void UpdateTrunAction();
 };
 

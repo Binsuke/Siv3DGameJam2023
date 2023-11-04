@@ -1,9 +1,6 @@
 ﻿# include <Siv3D.hpp> // Siv3D v0.6.12
 
-#include "AntNestBoad.h"
-#include "Choser.h"
-
-
+#include "Sccene.h"
 void Main()
 {
 
@@ -16,19 +13,21 @@ void Main()
 	Scene::SetBackground(ColorF{ 0.6, 0.8, 0.7 });
 
 
-	Choser cButton;
+	cScene _Scene;
 
+	_Scene.Init();
 
-	cButton.Init();
-
-
+	
 	while (System::Update())
 	{
 
-		cButton.Run();
+		_Scene.SceneInit();
 
-		cButton.Draw();
 
+		_Scene.SceneRun();
+
+		_Scene.SceneDraw();
+		
 	}
 }
 
