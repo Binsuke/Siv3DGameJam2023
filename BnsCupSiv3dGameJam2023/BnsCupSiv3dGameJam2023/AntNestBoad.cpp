@@ -107,6 +107,7 @@ bool AntNestBoad::OnClicked(int x, int y) {
 		NestData[x][y] = eNestData::Open;
 		iColor[x][y] = iColorPicker[eNestData::cpOpen];
 		fColor[x][y] = fColorPicker[eNestData::cpOpen];
+		++_OpenCnt;
 		SearchFlg = true;
 		_SearchtmpX = x;
 		_SearchtmpY = y;
@@ -220,7 +221,7 @@ void AntNestBoad::BoadUpdate(int32 x,int32 y) {
 	//右方向
 	tmpx = x + 1;
 	tmpy = y;
-	if (tmpx < Param::SizeW) {
+	if (tmpx < NestSize::_W) {
 		if (NestData[tmpx][tmpy] == eNestData::Close || NestData[tmpx][tmpy] == eNestData::canOpen){
 			NestData[tmpx][tmpy] = eNestData::canOpen;
 		}
@@ -247,7 +248,7 @@ void AntNestBoad::BoadUpdate(int32 x,int32 y) {
 	tmpx = x;
 	tmpy = y + 1;
 
-	if (tmpy < Param::SizeH) {
+	if (tmpy < NestSize::_H) {
 		if (NestData[tmpx][tmpy] == eNestData::Close || NestData[tmpx][tmpy] == eNestData::canOpen) {
 			NestData[tmpx][tmpy] = eNestData::canOpen;
 		}
@@ -446,6 +447,11 @@ void AntNestBoad::BonusInfoDraw() {
 		}
 	}
 
+	
+	//cDrawWindow.Draw()
+}
+
+void AntNestBoad::BonusInfoPopupDraw() {
 	if (BonusInfotmpX >= 0 && BonusInfotmpY >= 0 && BonusDrawFlg) {
 		cDrawWindow.Draw(BonusInfoStr[NestBonusData[BonusInfotmpX][BonusInfotmpY]]);
 		//cDrawWindow.Draw(U"test");
@@ -457,5 +463,4 @@ void AntNestBoad::BonusInfoDraw() {
 		NestBonusData[_SearchtmpX][_SearchtmpY] = eNestBonusData::NONE;
 		BonusDrawFlg = false;
 	}
-	//cDrawWindow.Draw()
 }

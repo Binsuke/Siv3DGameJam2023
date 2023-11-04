@@ -167,6 +167,8 @@ private:
 	void gfbDrawInfo();
 	void nobDrawInfo();
 	void grbDrawInfo();
+	void bbDrawInfo();
+	void atDrawInfo();
 	void UpdateTrunAction();
 };
 

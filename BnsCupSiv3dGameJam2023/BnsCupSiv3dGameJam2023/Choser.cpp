@@ -76,10 +76,13 @@ void Choser::Draw()
 	MonthActionResultDraw();
 	MonthStartStatusDraw();
 
+	_NestObj.BonusInfoPopupDraw();
+
 	gfbDrawInfo();
 	nobDrawInfo();
 	grbDrawInfo();
-
+	bbDrawInfo();
+	atDrawInfo();
 	DebugPrint(orpGFBFlg, U"GFBFlg");
 }
 
@@ -181,7 +184,7 @@ void Choser::OnClicked() {
 					break;
 			}
 			
-			DebugPrint(NestOpenFlg, U"NestOpenFlg");
+			//DebugPrint(NestOpenFlg, U"NestOpenFlg");
 		}
 		//Nestの実際のオープン関係関数　マウスオーバーの色変化＋マウスクリック
 		if (_NestObj.MouseOveredChangeColor(NestOpenFlg)) {
@@ -515,6 +518,7 @@ void Choser::BonusFunc() {
 	case AntNestBoad::eNestBonusData::ANT://アリの仕様はリソースクラスに追加するので後回し
 		_ResourceObj.GetSeachBonus();
 		++TurnActionCount;
+		UpdateNextFoodPoint();
 		break;
 	case AntNestBoad::eNestBonusData::UnkFood:
 		_FoodObj.AddFood(Choser::Bonus::BonusFoodPoint);
@@ -522,6 +526,7 @@ void Choser::BonusFunc() {
 	case AntNestBoad::eNestBonusData::UnkANT://上記と同じ
 		_ResourceObj.GetSeachBonus();
 		++TurnActionCount;
+		UpdateNextFoodPoint();
 		break;
 	case AntNestBoad::eNestBonusData::UnkEnemy://とりあえず隠れている敵を見つけたときは敵を１増やす
 		_EnemyObj.AddEnemy(1);
@@ -589,10 +594,21 @@ void Choser::nobDrawInfo() {
 void Choser::grbDrawInfo() {
 	if (orpGRBFlg) {
 		
-		BottunInfoWindow.DrawWindowOnly(U"子供を産むボタン 家があると赤ちゃんを産むことができる 赤ちゃんは大人の半分の食料を消費して４週間で大人になる\n現在の家の数は{} 全体のアリの総数は{} 空き部屋の数は{}"_fmt(_NestObj.GetHouseCnt(), _ResourceObj.GetResouceCnt() + _ArmyObj.GetArmyCnt(), _NestObj.GetHouseCnt() - _ResourceObj.GetResouceCnt() - _ArmyObj.GetArmyCnt()),20,10,10);
+		BottunInfoWindow.DrawWindowOnly(U"子供を産むボタン 家があると子供を産むことができる、子供は大人の半分の食料を消費して４週間で大人になる\n現在の家の数は{} 全体のアリの総数は{} 空き部屋の数は{}"_fmt(_NestObj.GetHouseCnt(), _ResourceObj.GetResouceCnt() + _ArmyObj.GetArmyCnt(), _NestObj.GetHouseCnt() - _ResourceObj.GetResouceCnt() - _ArmyObj.GetArmyCnt()),20,10,10);
 	}
 }
 
+void Choser::bbDrawInfo() {
+	if (orpBBFlg) {
+		BottunInfoWindow.DrawWindowOnly(U"家を建てるボタン　巣穴の空き部屋に家を建てる\n今の空き部屋の数は{}　家の数は{}"_fmt(_NestObj.GetOpenCnt(), _NestObj.GetHouseCnt()),20,10,10);
+	}
+}
+
+void Choser::atDrawInfo() {
+	if (orpAtFlg) {
+		BottunInfoWindow.DrawWindowOnly(U"兵士アリの育成ボタン　一般アリを兵士アリにする、兵士アリは月末に敵を倒して食料を手に入れてくれる\n昇格できる一般アリの数{} 現在のアリの数{}"_fmt(_ResourceObj.GetReserchCnt(), _ArmyObj.GetArmyCnt()), 20, 10, 10);
+	}
+}
 void Choser::UpdateTrunAction() {
 	WeekTurnMax = Choser::Param::InitTurnActionCnt + _ResourceObj.GetResourceParentCnt();
 }

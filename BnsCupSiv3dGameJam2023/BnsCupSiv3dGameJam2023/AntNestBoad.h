@@ -20,7 +20,7 @@ public:
 
 		BONUS_FOOD_POINT = 5,//とりあえず５
 
-		PAR_NONE = 70,//８０％は何もなし
+		PAR_NONE = 70,//7０％は何もなし
 		PAR_ANT = 2,//2%はあり
 		PAR_FOOD = 10,//10%はフード
 		PAR_UNK_FOOD = 10,//隠れたフード
@@ -109,6 +109,7 @@ private:
 	bool BonusInfoDrawInitFlg = false;
 	int32 _SearchtmpX, _SearchtmpY;
 
+	int32 _OpenCnt = 0;
 
 	bool isValid(int32 x,int32 y);
 
@@ -135,6 +136,8 @@ public:
 	void BoadClear();
 	void BoadUpdate(int32 x,int32 y);
 
+	void BonusInfoPopupDraw();
+
 	bool GetBonusDrawFlg() {
 		return BonusDrawFlg;
 	}
@@ -145,6 +148,7 @@ public:
 
 	void BoadOpen(int x, int y) {
 		NestData[x][y] = eNestData::Open;
+		++_OpenCnt;
 		BoadUpdate(x, y);
 	}
 
@@ -153,6 +157,9 @@ public:
 		return HouseCnt;
 	}
 
+	int32 GetOpenCnt() {
+		return _OpenCnt;
+	}
 	DrawWindow cDrawWindow;
 
 	//void SearchCanOpenBlock();
