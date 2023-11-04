@@ -71,3 +71,11 @@ bool DrawWindow::OnClicked() {
 	}
 	return false;
 }
+
+
+void DrawWindow::DrawWindowOnly(String str, ColorF color) {
+	_RectWindow.draw(_WindowInColor);
+	_RectWindow.drawFrame(5, _WindowOutColor);
+
+	font(U"{}"_fmt(str)).draw(50, _X + 30, _Y + 100,color);
+}

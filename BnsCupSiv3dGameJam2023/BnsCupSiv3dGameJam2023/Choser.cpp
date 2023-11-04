@@ -250,11 +250,12 @@ void Choser::TurnAdm() {
 
 }
 
-void Choser::Run() {
+int32 Choser::Run() {
 	BottunOverrideMgr();
 	OnClicked();
 	BonusFunc();
 	TurnAdm();
+	return 3;
 }
 
 

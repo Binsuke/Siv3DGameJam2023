@@ -35,6 +35,8 @@ public:
 
 	void DrawWindowOnly(String str, int32 StrSize);
 
+	void DrawWindowOnly(String str, ColorF color);
+
 	void DrawWindowOnly(String str, int32 StrSize, int32 offsetX, int32 offsetY);
 };
 
