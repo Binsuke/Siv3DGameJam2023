@@ -220,9 +220,7 @@ void Choser::TurnAdm() {
 	bool WeekEndflg = false;
 	if (TurnActionCount == 0) {//週の終わり
 		++WeekCnt;
-		UpdateTrunAction();
-		TurnActionCount = WeekTurnMax;
-		WeekEndflg = true;//ここでアップデートしてしまうと月末の処理があまりよろしくないので下に移す
+			WeekEndflg = true;//ここでアップデートしてしまうと月末の処理があまりよろしくないので下に移す
 		}
 	if (WeekCnt % 4 == 0 && WeekCnt != 0) {
 		Print << U"一か月経過";
@@ -245,6 +243,9 @@ void Choser::TurnAdm() {
 	if (WeekEndflg) {
 		_ResourceObj.WeekEndResourceAgeUpdate();
 		_ResourceObj.UpdateReserchCnt();
+		UpdateTrunAction();
+		TurnActionCount = WeekTurnMax;
+
 
 	}
 
