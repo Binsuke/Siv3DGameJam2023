@@ -246,7 +246,7 @@ int32 Choser::TurnAdm() {
 			WeekEndflg = true;//ここでアップデートしてしまうと月末の処理があまりよろしくないので下に移す
 		}
 	if (WeekCnt % 4 == 0 && WeekCnt != 0) {
-		Print << U"一か月経過";
+		//Print << U"一か月経過";
 		if (MonthActionFlg == false) {
 			MonthActionFlg = true;
 			MonthAction();
@@ -522,7 +522,10 @@ void Choser::MonthStartStatusSet() {//月の初めの様々なステータスを
 	if (tmp <= 1) {
 		tmp = 1;
 	}
-	Randomtmp = Random(100) % (tmp * tmp);
+	if (tmp >= 5) {
+		tmp = 4;
+	}
+	Randomtmp = Random(100) % (tmp * tmp );
 
 	_EnemyObj.SetNextEnemyCount(Randomtmp + MonthCnt);
 
@@ -651,7 +654,7 @@ void Choser::bbDrawInfo() {
 
 void Choser::atDrawInfo() {
 	if (orpAtFlg) {
-		BottunInfoWindow.DrawWindowOnly(U"兵士アリの育成ボタン　一般アリを兵士アリにする、兵士アリは月末に敵を倒して食料を手に入れてくれる\n昇格できる一般アリの数{} 現在のアリの数{}"_fmt(_ResourceObj.GetReserchCnt(), _ArmyObj.GetArmyCnt()), 20, 10, 10);
+		BottunInfoWindow.DrawWindowOnly(U"兵士アリの育成ボタン　一般アリを兵士アリにする、兵士アリは月末に敵を倒して食料を手に入れてくれる\n昇格できる一般アリの数{} 現在の兵士アリの数{}"_fmt(_ResourceObj.GetReserchCnt(), _ArmyObj.GetArmyCnt()), 20, 10, 10);
 	}
 }
 void Choser::UpdateTrunAction() {
