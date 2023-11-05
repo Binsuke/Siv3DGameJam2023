@@ -12,7 +12,7 @@ void Main()
 	// 背景の色を設定する | Set the background color
 	Scene::SetBackground(ColorF{ 0.6, 0.8, 0.7 });
 
-
+	Window::SetTitle(U"ありときりぎりす");
 	cScene _Scene;
 
 	_Scene.Init();
